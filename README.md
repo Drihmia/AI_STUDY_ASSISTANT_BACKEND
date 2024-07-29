@@ -23,4 +23,11 @@ lanching the web app
 ```bash
 node server.js
 ```
+Open your browser and go to `http://localhost:3000/`
 
+## Resources
+- [Documentation](https://console.groq.com/docs/examples)
+- [Groq API](https://console.groq.com/docs/api)
+- [Python API](https://console.groq.com/docs/python)
+- [Chatbot with Conversational Memory on LangChain](https://replit.com/@GroqCloud/Chatbot-with-Conversational-Memory-on-LangChain#main.py)
+- [Groq Quickstart Conversational Chatbot](https://replit.com/@GroqCloud/Groq-Quickstart-Conversational-Chatbot?v=1#README.md)
