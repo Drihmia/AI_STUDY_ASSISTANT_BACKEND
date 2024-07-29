@@ -1,0 +1,64 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+  <style>
+    #chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .user-message {
+      font-weight: bold;
+    }
+    .ai-response {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="messages"></div>
+    <form id="chat-form">
+      <label for="message">Enter your message:</label>
+      <input type="text" id="message" name="message" required>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('chat-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const messageInput = document.getElementById('message');
+      const message = messageInput.value;
+      messageInput.value = '';
+
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message })
+      });
+      
+      const data = await response.json();
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML += `
+        <div class="message">
+          <div class="user-message">You: ${data.userMessage}</div>
+          <div class="ai-response">AI: ${data.aiResponse}</div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
+
