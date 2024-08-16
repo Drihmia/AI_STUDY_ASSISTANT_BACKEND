@@ -15,18 +15,20 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true  # Opt-out of Node.js 20 migration temporarily
 
     steps:
-      - uses: actions/checkout@v3  # Compatible with Node.js 20
-      - uses: actions/setup-python@v4  # Compatible with Node.js 20
+      - uses: actions/checkout@v3  # Compatible with Node.js 16
+      - uses: actions/setup-python@v4  # Compatible with Node.js 16
         with:
-          python-version: '3.11'  # Specify the Python version you want to use
+          python-version: '3.11'
       - run: pip install -r requirements.txt  # Install requirements to enable GitHub to run tests
       - run: python chat.py
 
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}  # Use GitHub Secrets for sensitive information
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: chat-bot-ai-server
           heroku_email: drihmia.redouane@gmail.com
 
