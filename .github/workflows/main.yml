@@ -17,8 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3  # Updated to the latest version
-      - uses: actions/setup-python@v4  # Updated to the latest version
+      - uses: actions/checkout@v3  # Compatible with Node.js 20
+      - uses: actions/setup-python@v4  # Compatible with Node.js 20
+        with:
+          python-version: '3.11'  # Specify the Python version you want to use
       - run: pip install -r requirements.txt  # Install requirements to enable GitHub to run tests
       - run: python chat.py
 
