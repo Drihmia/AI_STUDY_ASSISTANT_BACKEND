@@ -14,12 +14,12 @@ app.post('/chat', async (req, res) => {
   const userMessage = req.body.message;
 
   try {
-    const response = await axios.post('http://localhost:5000/chat', { message: userMessage });
+    const response = await axios.post('http://127.0.0.1:5000/chat', { message: userMessage });
     const aiResponse = response.data.response;
 
     res.json({ userMessage, aiResponse });
   } catch (error) {
-    console.error(error);
+    //console.error(error);
     res.status(500).send('Something went wrong!');
   }
 });
