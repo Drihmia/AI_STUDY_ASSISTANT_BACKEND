@@ -7,6 +7,7 @@ pip3 install -r requirements.txt
 
 # Node related packages:
 node Install
+npm install -g forever
 ```
 
 ## Description
@@ -17,11 +18,22 @@ I have feed it with prompts to respond to students questions about courses relat
 lanching the chatbot
 ```bash
 python chatbot.py
+OR
+gunicorn -w 3 -b 127.0.0.1:5001 chat:app --error-logfile ai-error.log --access-logfile ai-access.log --capture-output --pid /run/chat.pid --daemon
 ```
 
 lanching the web app
 ```bash
 node server.js
+OR
+forever start server.js
+```
+
+Mode commands
+````bash
+forever list
+forever stop server.js
+forever logs
 ```
 Open your browser and go to `http://localhost:3000/`
 

@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import threading
 import time
 import signal
+from uuid import uuid4
 
 load_dotenv()
 
@@ -51,7 +52,7 @@ def save_chat_history(user_id):
         json.dump(user_chat_histories[user_id], json_file, indent=4)
     print(f"Chat history for user {user_id} saved successfully.")
 
-# Register signal handler for graceful shutdown (e.g., when you press Ctrl+C)
+# Register signal handler for graceful shutdown (e.g., when Ctrl+C or Ctrl+D is pressed)
 def handle_signal(signal, frame):
     print("\nSaving chat histories before shutdown...")
     for user_id in user_chat_histories:
@@ -60,6 +61,9 @@ def handle_signal(signal, frame):
 
 # Register the signal handler for SIGINT (Ctrl+C)
 signal.signal(signal.SIGINT, handle_signal)
+
+# Register the signal handler for SIGINT (Ctrl+D)
+signal.signal(signal.SIGTERM, handle_signal)
 
 # Load the chat histories on server startup
 if not os.path.exists(history_dir):
@@ -75,41 +79,76 @@ def chat(system_messages):
     return chat_completion.choices[0].message.content
 
 
-@app.route('/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST'])
 def chat_endpoint():
     # Get the user message from the request
     user_message = request.json.get('message')
 
     # Get the user ID from the cookie
     user_id = request.cookies.get('user_id')
+    usr_id_Exist = 1
 
     print("user_id:", user_id)
 
     if not user_id:
         # If no user ID, generate a new one (this is only for new users)
-        user_id = str(len(user_chat_histories) + 1)  # simple user ID generation
+        user_id = str(len(user_chat_histories)) + '_' + str(uuid4())
+        print("New user_id:", user_id)
+
+        usr_id_Exist = 0
 
     # Ensure there's a history for the user by loading their specific history file
     if user_id not in user_chat_histories:
         user_chat_histories[user_id] = load_chat_history(user_id)
 
-    # Append the user's message to their chat history
-    user_chat_histories[user_id].append({"role": "user", "content": user_message})
+    if user_message:
+        # Append the user's message to their chat history
+        user_chat_histories[user_id].append({"role": "user", "content": user_message})
 
-    # Get the response from the AI
-    response = chat(user_chat_histories[user_id])
+        # Get the response from the AI
+        response = chat(user_chat_histories[user_id])
 
-    # Append the assistant's response to the chat history
-    user_chat_histories[user_id].append({"role": "assistant", "content": f"---- {response}"})
+        # Append the assistant's response to the chat history
+        user_chat_histories[user_id].append({"role": "assistant", "content": response})
 
-    # Trigger saving chat history to file in the background before responding
-    threading.Thread(target=save_chat_history, args=(user_id,), daemon=True).start()
+        # Trigger saving chat history to file in the background
+        # threading.Thread(target=save_chat_history, args=(user_id,), daemon=True).start()
+        save_chat_history(user_id)
+
+    else:
+        # If no message, return the full chat history
+        response = None
 
     # Set the user ID in the response cookie
-    resp = make_response(jsonify({"response": response}))
-    resp.set_cookie('user_id', user_id)  # Set user ID in the cookie for subsequent visits
+    resp = make_response(jsonify({"response": response, "history": user_chat_histories[user_id]}))
+
+    if not usr_id_Exist:
+        resp.set_cookie('user_id', user_id)  # Set user ID in the cookie for subsequent visits
     return resp
 
+
+@app.route('/api/history', methods=['GET'])
+def load_history():
+    # Get the user ID from the cookie
+    user_id = request.cookies.get('user_id')
+    print("user_id from load_history:", user_id)
+
+    if not user_id:
+        user_id = str(len(user_chat_histories)) + '_' + str(uuid4())
+        usr_id_Exist = 0
+
+    if user_id not in user_chat_histories:
+        user_chat_histories[user_id] = [system_prompt]
+    else:
+        user_chat_histories[user_id] = load_chat_history(user_id)
+
+    # Return the user's chat history
+    resp = make_response(jsonify({"history": user_chat_histories[user_id]}))
+    if not usr_id_Exist:
+        resp.set_cookie('user_id', user_id)
+    return resp
+
+
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    app.run(port=5001, debug=False)
 

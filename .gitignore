@@ -1,0 +1,10 @@
+chat_histories.json
+*error*
+*access*
+*logs*
+Procfile
+Package-lock.json
+node_modules
+groq-*
+*chat_histories
+__pycache__
