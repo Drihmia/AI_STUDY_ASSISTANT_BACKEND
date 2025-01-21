@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true  # Opt-out of Node.js 20 migration temporarily
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }} 
 
     steps:
       - uses: actions/checkout@v3  # Compatible with Node.js 16
