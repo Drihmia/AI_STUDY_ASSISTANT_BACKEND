@@ -50,11 +50,12 @@
       });
       
       const data = await response.json();
+      console.log(data)
       const messagesDiv = document.getElementById('messages');
       messagesDiv.innerHTML += `
         <div class="message">
-          <div class="user-message">You: ${data.userMessage}</div>
-          <div class="ai-response">AI: ${data.aiResponse}</div>
+          <div class="user-message">You: ${message}</div>
+          <div class="ai-response">AI: ${data.response}</div>
         </div>
       `;
     });
