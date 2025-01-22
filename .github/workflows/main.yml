@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true  # Opt-out of Node.js 20 migration temporarily
-      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }} 
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
 
     steps:
       - uses: actions/checkout@v3  # Compatible with Node.js 16
@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt  # Install requirements to enable GitHub to run tests
-      - run: python chat.py
+      - run: gunicorn -w 3 -b 127.0.0.1:5001 chat:app --error-logfile /logs/ai-error.log --access-logfile /logs/ai-access.log --capture-output --pid /run/chat.pid --daemon
 
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
