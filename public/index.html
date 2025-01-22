@@ -22,6 +22,7 @@
     }
     .message {
       margin-bottom: 10px;
+      white-space: pre-line; /* Automatically handles newlines */
     }
     .user-message {
       font-weight: bold;
@@ -57,10 +58,12 @@
       
       messagesDiv.innerHTML = '';
       data.history.forEach(msg => {
+        <!--const direction = franc(msg.parts) === 'ara' ? 'rtl' : 'ltr';-->
+        <!--console.log(direction);-->
         if (msg.role === 'user') {
-          messagesDiv.innerHTML += `<div class="message user-message">You: ${msg.content}</div>`;
-        } else if (msg.role === 'assistant') {
-          messagesDiv.innerHTML += `<div class="message ai-response">AI: ${msg.content}</div>`;
+          messagesDiv.innerHTML += `<div class="message user-message">You: ${msg.parts}</div>`;
+        } else if (msg.role === 'model') {
+          messagesDiv.innerHTML += `<div class="message ai-response", dir="rtl">AI: ${msg.parts.replace(/\n/g, '<br>')}</div>`;
         }
       });
 

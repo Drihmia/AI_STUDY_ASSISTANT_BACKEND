@@ -3,7 +3,9 @@ chat_histories.json
 *access*
 *logs*
 Procfile
-Package-lock.json
+package.json
+package-lock.json
+
 node_modules
 groq-*
 *chat_histories
