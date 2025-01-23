@@ -51,19 +51,25 @@
   </div>
 
   <script>
+    // Define a regex to match Arabic characters
+    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/; 
+
     async function loadChatHistory() {
       const response = await fetch('/api/history');
       const data = await response.json();
       const messagesDiv = document.getElementById('messages');
-      
+
       messagesDiv.innerHTML = '';
       data.history.forEach(msg => {
         <!--const direction = franc(msg.parts) === 'ara' ? 'rtl' : 'ltr';-->
-        <!--console.log(direction);-->
+
+        const direction = arabicRegex.test(msg.parts) ? 'rtl' : 'ltr';
+        console.log(direction);
+
         if (msg.role === 'user') {
-          messagesDiv.innerHTML += `<div class="message user-message">You: ${msg.parts}</div>`;
+          messagesDiv.innerHTML += `<div class="message user-message", dir="${direction}">You: ${msg.parts}</div>`;
         } else if (msg.role === 'model') {
-          messagesDiv.innerHTML += `<div class="message ai-response", dir="rtl">AI: ${msg.parts.replace(/\n/g, '<br>')}</div>`;
+          messagesDiv.innerHTML += `<div class="message ai-response", dir="${direction}">AI: ${msg.parts.replace(/\n/g, '<br>')}</div>`;
         }
       });
 
@@ -87,9 +93,12 @@
 
       const data = await response.json();
       const messagesDiv = document.getElementById('messages');
+
+      const direction_response = arabicRegex.test(data.response) ? 'rtl' : 'ltr';
+      const direction_message = arabicRegex.test(message) ? 'rtl' : 'ltr';
       messagesDiv.innerHTML += `
-        <div class="message user-message">You: ${message}</div>
-        <div class="message ai-response">AI: ${data.response}</div>
+        <div class="message user-message", dir="${direction_message}">You: ${message}</div>
+        <div class="message ai-response", dir="${direction_response}">AI: ${data.response}</div>
       `;
 
       // Keep the latest message in view
