@@ -10,20 +10,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.post('/chat', async (req, res) => {
-  const userMessage = req.body.message;
-
-  try {
-    const response = await axios.post('http://127.0.0.1:5001/chat', { message: userMessage });
-    const aiResponse = response.data.response;
-
-    res.json({ userMessage, aiResponse });
-  } catch (error) {
-    //console.error(error);
-    res.status(500).send('Something went wrong!');
-  }
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/welcome', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'welcome_page.html'));
+});
 app.listen(port, () => {
   console.log(`Server is running on http://127.0.0.1:${port}`);
 });

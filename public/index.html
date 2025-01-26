@@ -3,51 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat</title>
+  <title>AI Study Assistant</title>
   <style>
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 2.5vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  #header {
+    color: #000;
+    font-size: 3vh;
+    font-weight: bold;
+    text-align: center;
+    padding: 1rem;
+    margin: 0;
+    letter-spacing: 0.04rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    z-index: 10;
+  }
+
+  #chat-container {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    min-width: 40%;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: calc(100vh - 100px); /* Adjusted to fit within viewport */
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  #chat-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: #fff;
+  }
+
+
+  button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  #footer {
+    background-color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: #7f8c8d;
+    border-top: 1px solid #ddd;
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+  }
+
+  #footer p {
+    margin: 0;
+    font-style: italic;
+    font-weight: bold;
+  }
+
+  #footer span {
+    color: #4CAF50;
+    font-weight: bold;
+  }
+
+  @media screen and (max-width: 600px) {
+    body {
+      padding: 0;
+    }
+
     #chat-container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      display: flex;
-      flex-direction: column;
-      height: 80vh;
+      max-width: 100%;
+      height: 100vh;
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
-    #messages {
-      flex-grow: 1;
-      overflow-y: auto;
-      margin-bottom: 10px;
+
+    #footer {
+      border-top: none;
+      border-radius: 0;
+      position: static;
     }
-    .message {
-      margin-bottom: 10px;
-      white-space: pre-line; /* Automatically handles newlines */
-    }
-    .user-message {
-      font-weight: bold;
-    }
-    .ai-response {
-      margin-left: 20px;
-    }
-    #chat-form {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    #message {
-      flex-grow: 1;
-      margin-right: 10px;
-    }
+  }
+ 
   </style>
 </head>
 <body>
   <div id="chat-container">
+    <div id="header">🌟 AI Study Assistant 🌟</div>
     <div id="messages"></div>
     <form id="chat-form">
       <input type="text" id="message" name="message" required placeholder="Type your message here...">
       <button type="submit">Send</button>
     </form>
+    <div id="footer">
+      <p>Powered by DRIHMIA AI | Your Personal Study Assistant</p>
+    </div>
   </div>
 
   <script>
@@ -67,15 +159,61 @@
         console.log(direction);
 
         if (msg.role === 'user') {
-          messagesDiv.innerHTML += `<div class="message user-message", dir="${direction}">You: ${msg.parts}</div>`;
+          messagesDiv.innerHTML += `<div class="message user-message", dir="${direction}"><strong>You:</strong> ${msg.parts}</div>`;
         } else if (msg.role === 'model') {
-          messagesDiv.innerHTML += `<div class="message ai-response", dir="${direction}">AI: ${msg.parts.replace(/\n/g, '<br>')}</div>`;
+          messagesDiv.innerHTML += `<div class="message ai-response", dir="${direction}"><strong>AI:</strong> ${msg.parts.replace(/\n/g, '<br>')}</div>`;
         }
       });
 
       // Keep the latest message in view
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+      // Ensure form is visible after loading chat history
+      const form = document.getElementById('question-form');
+      console.log(`form: ${form}`);
+
+      if (form) {
+        console.log('Form found');
+        form.style.display = 'block';
+        console.log('Form displayed');
+        form.addEventListener('submit', handleFormSubmit);
+        console.log('Form submit event listener added');
+      } else {
+        console.log('Form not found');
+      }
     }
+
+     // Function to handle form submission
+      function handleFormSubmit(event) {
+        console.log('Form submitted');
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const formObject = {};
+
+        formData.forEach((value, key) => {
+          formObject[key] = value;
+        });
+
+        const jsonData = JSON.stringify(formObject);
+        console.log("jsonData:", jsonData);
+
+        fetch('/api/answers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: jsonData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Response:', data);
+            loadChatHistory(); // Refresh the chat history after form submission
+          })
+          .catch(error => console.error('Error:', error));
+
+        // Keep the latest message in view
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
 
     document.getElementById('chat-form').addEventListener('submit', async function(event) {
       event.preventDefault();
@@ -92,6 +230,11 @@
       });
 
       const data = await response.json();
+
+      // Dont precede if the response in data is empty
+      if (data.response === '') {
+        return;
+      }
       const messagesDiv = document.getElementById('messages');
 
       const direction_response = arabicRegex.test(data.response) ? 'rtl' : 'ltr';
