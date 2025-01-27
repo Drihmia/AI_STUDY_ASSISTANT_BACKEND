@@ -126,6 +126,15 @@
       position: static;
     }
   }
+  input#message {
+    width: 100%;
+    height: 90%;
+    padding: 1px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 2.5vh;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
  
   </style>
 </head>
@@ -153,10 +162,7 @@
 
       messagesDiv.innerHTML = '';
       data.history.forEach(msg => {
-        <!--const direction = franc(msg.parts) === 'ara' ? 'rtl' : 'ltr';-->
-
         const direction = arabicRegex.test(msg.parts) ? 'rtl' : 'ltr';
-        console.log(direction);
 
         if (msg.role === 'user') {
           messagesDiv.innerHTML += `<div class="message user-message", dir="${direction}"><strong>You:</strong> ${msg.parts}</div>`;
@@ -168,24 +174,15 @@
       // Keep the latest message in view
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-      // Ensure form is visible after loading chat history
-      const form = document.getElementById('question-form');
-      console.log(`form: ${form}`);
 
-      if (form) {
-        console.log('Form found');
-        form.style.display = 'block';
-        console.log('Form displayed');
-        form.addEventListener('submit', handleFormSubmit);
-        console.log('Form submit event listener added');
-      } else {
-        console.log('Form not found');
+      let form = null;
+      if (data.form_id) {
+        // Ensure form is visible after loading chat history
+        form = document.getElementById(data.form_id);
       }
-    }
 
-     // Function to handle form submission
-      function handleFormSubmit(event) {
-        console.log('Form submitted');
+    // Function to handle form submission
+    const handleFormSubmit = (event) => {
         event.preventDefault();
         const form = event.target;
         const formData = new FormData(form);
@@ -196,7 +193,6 @@
         });
 
         const jsonData = JSON.stringify(formObject);
-        console.log("jsonData:", jsonData);
 
         fetch('/api/answers', {
           method: 'POST',
@@ -205,7 +201,6 @@
         })
           .then(response => response.json())
           .then(data => {
-            console.log('Response:', data);
             loadChatHistory(); // Refresh the chat history after form submission
           })
           .catch(error => console.error('Error:', error));
@@ -214,6 +209,13 @@
         const messagesDiv = document.getElementById('messages');
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
       }
+
+      if (form) {
+        form.removeEventListener('submit', handleFormSubmit);
+        form.style.display = 'block';
+        form.addEventListener('submit', handleFormSubmit);
+      }
+    }
 
     document.getElementById('chat-form').addEventListener('submit', async function(event) {
       event.preventDefault();
@@ -246,6 +248,7 @@
 
       // Keep the latest message in view
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      loadChatHistory();
     });
 
     // Load chat history on page load
