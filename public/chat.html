@@ -68,6 +68,9 @@
 
 
   button {
+    min-width: 10%;
+    min-height: 80%;
+    margin-right: -2%;
     padding: 8px 12px;
     background-color: #4CAF50;
     color: white;
@@ -125,15 +128,27 @@
       border-radius: 0;
       position: static;
     }
+
+    button {
+      font-size: 2vh;
+      padding: 8px 6px;
+      min-width: 15%;
+      min-height: 90%;
+    }
   }
-  input#message {
+
+  textarea#message {
     width: 100%;
     height: 90%;
+    margin-left: -1.75%;
+    margin-right: 2%;
     padding: 1px 12px;
+    padding-top: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 2.5vh;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    resize: none;
   }
  
   </style>
@@ -143,7 +158,7 @@
     <div id="header">🌟 AI Study Assistant 🌟</div>
     <div id="messages"></div>
     <form id="chat-form">
-      <input type="text" id="message" name="message" required placeholder="Type your message here...">
+      <textarea id="message" name="message" required autofocus  autocomplete maxlength="200" placeholder="Type your message here..."></textarea>
       <button type="submit">Send</button>
     </form>
     <div id="footer">
@@ -153,7 +168,21 @@
 
   <script>
     // Define a regex to match Arabic characters
-    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/; 
+    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+
+    const formatMessage = ({ parts, role }) => {
+      console.log('parts', parts);
+      console.log('role', role);
+      parts = parts[0] === '\n' ? parts : '\n' + parts;
+      parts = parts.replace(/\n/g, "<br>");
+      if (role === 'user') {
+        parts = parts.replace(/ /g, "&ensp;");
+      } else if (role === 'model' && !parts.includes('<form ')) {
+        parts = parts.replace(/ /g, "&ensp;");
+      }
+
+      return parts;
+    }
 
     async function loadChatHistory() {
       const response = await fetch('/api/history');
@@ -163,12 +192,10 @@
       messagesDiv.innerHTML = '';
       data.history.forEach(msg => {
         const direction = arabicRegex.test(msg.parts) ? 'rtl' : 'ltr';
+        const identifier = msg.role === 'user' ? 'You' : 'AI';
 
-        if (msg.role === 'user') {
-          messagesDiv.innerHTML += `<div class="message user-message", dir="${direction}"><strong>You:</strong> ${msg.parts}</div>`;
-        } else if (msg.role === 'model') {
-          messagesDiv.innerHTML += `<div class="message ai-response", dir="${direction}"><strong>AI:</strong> ${msg.parts.replace(/\n/g, '<br>')}</div>`;
-        }
+        messagesDiv.innerHTML += `<div class="message user-message", dir="${
+          direction}"><strong>${identifier}:</strong> ${formatMessage( msg )}</div>`;
       });
 
       // Keep the latest message in view
@@ -242,13 +269,12 @@
       const direction_response = arabicRegex.test(data.response) ? 'rtl' : 'ltr';
       const direction_message = arabicRegex.test(message) ? 'rtl' : 'ltr';
       messagesDiv.innerHTML += `
-        <div class="message user-message", dir="${direction_message}">You: ${message}</div>
-        <div class="message ai-response", dir="${direction_response}">AI: ${data.response}</div>
+        <div class="message user-message", dir="${direction_message}">You: ${formatMessage({ 'parts': message, 'role': 'user'})}</div>
+        <div class="message ai-response", dir="${direction_response}">AI: ${formatMessage({ 'parts': data.response, 'role': 'model'})}</div>
       `;
 
       // Keep the latest message in view
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
-      loadChatHistory();
     });
 
     // Load chat history on page load
