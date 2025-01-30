@@ -2,6 +2,7 @@ import os
 import sys
 import json
 from flask import Flask, request, jsonify, make_response, session
+from flask_cors import CORS
 from dotenv import load_dotenv
 import signal
 from uuid import uuid4
@@ -19,6 +20,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
+CORS(app)
 
 # Path to the directory where chat histories are saved
 history_dir = 'chat_histories/'
@@ -107,7 +109,13 @@ def chat_endpoint():
     resp = make_response(jsonify({ "response": response, "form_id": random_string }))
 
     if not usr_id_exist:
-        resp.set_cookie('user_id', user_id)  # set user id in the cookie for subsequent visits
+        resp.set_cookie('user_id',
+                        value=user_id,
+                        domain='.drihmia.me',   # Share cookie across all subdomains ai. and ai1. and any future subdomains.
+                        secure=True,            # Set Secure=True to ensure it's only sent over HTTPS
+                        httponly=True,          # For security
+                        samesite='Lax'          # Set SameSite=Lax to prevent CSRF attacks
+                        )
     return resp
 
 
@@ -163,5 +171,5 @@ if __name__ == '__main__':
     # signal.signal(signal.SIGINT, handle_signal)
     # Register the signal handler for SIGINT (Ctrl+D)
     # signal.signal(signal.SIGTERM, handle_signal)
-    app.run(port=5001, debug=True)
+    app.run(port=5001, debug=False)
 
