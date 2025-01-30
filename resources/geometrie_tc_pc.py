@@ -47,7 +47,7 @@ II – Les molécules et leurs liaisons
 
 Définition :Une molécule est un ensemble d'atomes reliés par des liaisons chimiques, formant une entité stable et électriquement neutre.
 
-Liaisons covalentes :Une liaison covalente se forme lorsque deux atomes partagent des électrons externes, créant ainsi un doublet liant.
+Liaisons covalentes :Un ou plusieur doublets liants se forme lorsque deux atomes partagent des électrons externes, créant ainsi un doublet liant.
 
 Structure électronique des atomes :
 
@@ -75,7 +75,7 @@ III – Isomères et Géométrie Moléculaire
 
 Types de formules :
 
-Formule brute : Indique uniquement le nombre et les types d'atomes présents.Exemple : CH₄, H₂O
+Formule brute ou formule moléculaire : Indique uniquement le nombre et les types d'atomes présents.Exemple : CH₄, H₂O
 
 Formule semi-développée : Montre les liaisons principales entre atomes (les liaisons avec l'hydrogène sont souvent omises).
 
@@ -100,14 +100,14 @@ Notes et Équivalences Terminologiques
 Équivalences :
 
 Configuration électronique = Structure électronique = Répartition électronique.
+Externe = de valence = périphérique.
 
 Liaison covalente = Doublet d’électrons liants.
 
-Formule brute = Formule moléculaire.
-
-Formule développée : Représentation de Lewis intégrale.
 
 Traduction :
 
 Isomers → Motamakibat (arabe).
+
+IMPORTANT: Lewis Représentation doit être écrit à la interieur de la balise <pre> pour une meilleure lisibilité + Il faut mentionner que les doubles non liants ne sont pas représentés  à cause de la limitation de l'outil de dessin + il fault mentionner que l'atome tel a le nombre  des doublets non liants sur lui.
 """
