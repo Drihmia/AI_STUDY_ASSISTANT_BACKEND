@@ -1,13 +1,11 @@
-import os
-import sys
-import json
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify, make_response, session
 from flask_cors import CORS
-from dotenv import load_dotenv
+import google.generativeai as genai
+from os import getenv
+from re import sub
 import signal
 from uuid import uuid4
-import google.generativeai as genai
-from re import sub
 from system_prompt import system_prompt_parts
 from tools.utils import (load_chat_history,
                          save_chat_history,
@@ -19,7 +17,7 @@ from tools.gemini_chat import chat_gemini
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = getenv('SECRET_KEY')
 CORS(app)
 
 # Path to the directory where chat histories are saved
