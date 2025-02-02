@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, make_response, session
 from flask_cors import CORS
@@ -17,7 +18,21 @@ from tools.gemini_chat import chat_gemini
 load_dotenv()
 
 app = Flask(__name__)
+
+# Set the secret key for the session
 app.secret_key = getenv('SECRET_KEY')
+
+# Set the session lifetime to 365 days
+app.permanent_session_lifetime = timedelta(days=365)
+
+# Set the session cookie settings
+app.config.update(
+    SESSION_COOKIE_DOMAIN='.drihmia.me',
+    SESSION_COOKIE_NAME='session',
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=True,
+)
 CORS(app)
 
 # Path to the directory where chat histories are saved
@@ -28,6 +43,16 @@ user_chat_histories = load_chat_history_startup({}, history_dir)
 
 # Load the chat histories on server startup
 load_chat_history_startup(user_chat_histories, history_dir)
+
+
+@app.before_request
+def before_request():
+    """
+    Before request
+    """
+    session.permanent = True
+    print("session from before_request:", session)
+
 
 @app.route('/api/chat', methods=['POST'])
 def chat_endpoint():
@@ -105,14 +130,17 @@ def chat_endpoint():
 
     # set the user id in the response cookie
     resp = make_response(jsonify({ "response": response, "form_id": random_string }))
+    print("session from /api/chat:", session)
 
     if not usr_id_exist:
+        expire_date = datetime.now() + timedelta(days=365)
         resp.set_cookie('user_id',
                         value=user_id,
                         domain='.drihmia.me',   # Share cookie across all subdomains ai. and ai1. and any future subdomains.
                         secure=True,            # Set Secure=True to ensure it's only sent over HTTPS
                         httponly=True,          # For security
-                        samesite='Lax'          # Set SameSite=Lax to prevent CSRF attacks
+                        samesite='Lax',         # Set SameSite=Lax to prevent CSRF attacks
+                        expires=expire_date    # Set the cookie to expire in 365 days
                         )
     return resp
 
@@ -142,6 +170,8 @@ def load_history():
         print("Exception:", e)
 
         resp = make_response(jsonify({"history": [], 'form_id': session.get('form_id', '')}))
+
+        print("session from /api/history:", session)
 
     return resp
 
