@@ -154,7 +154,10 @@ def load_history():
     try:
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 30))
-        limit = limit if limit%2 == 0 else limit + 1
+
+        # Ensure limit is even
+        if limit % 2 != 0:
+            limit += 1
     except ValueError:
         # If page or limit cannot be cast to integer, return bad request with error message
         return make_response(jsonify({
@@ -171,6 +174,14 @@ def load_history():
             raise ValueError("User history not found")
 
         user_history = user_chat_histories[user_id]
+        total_messages = len(user_history)
+
+        # Ensure total_messages is even (if an odd number exists, remove the last entry)
+        if total_messages % 2 != 0:
+            total_messages -= 1
+
+        # Calculate the max_page based on the even messages pairs
+        max_page = (total_messages + limit - 1) // limit
 
         # Reverse the history so the most recent messages are first
         reversed_history = user_history[::-1]
@@ -184,6 +195,7 @@ def load_history():
             "history": paginated_history[::-1],  # Reverse back to keep original order per page
             "page": page,
             "limit": limit,
+            "max_page": max_page,
             "form_id": session.get('form_id', '')
         }))
         resp.headers['Content-Type'] = 'application/json'
@@ -197,6 +209,7 @@ def load_history():
             "history": [],
             "page": page,
             "limit": limit,
+            "max_page": 1,
             "form_id": session.get('form_id', '')
         }))
 
