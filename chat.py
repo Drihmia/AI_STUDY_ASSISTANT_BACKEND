@@ -84,7 +84,7 @@ def chat_endpoint():
 
     if answers:
         formatted_answers = [k + ': ' + v for k, v in answers.items()]
-        user_message = f"My answers to your testing form are:<br>&emsp;➔ {"<br>&emsp;➔ ".join(formatted_answers)}<br>"
+        user_message = f"My answers to your test are:<br>&emsp;➔ {"<br>&emsp;➔ ".join(formatted_answers)}<br>"
     session['answers'] = None
 
     if not user_message:
@@ -140,7 +140,7 @@ def chat_endpoint():
                         secure=True,            # Set Secure=True to ensure it's only sent over HTTPS
                         httponly=True,          # For security
                         samesite='Lax',         # Set SameSite=Lax to prevent CSRF attacks
-                        expires=expire_date    # Set the cookie to expire in 365 days
+                        expires=expire_date     # Set the cookie to expire in 365 days
                         )
     return resp
 
@@ -149,29 +149,56 @@ def chat_endpoint():
 def load_history():
     # Get the user ID from the cookie
     user_id = request.cookies.get('user_id')
-    # print("user_chat_histories:", user_chat_histories.keys())
 
+    # Get pagination parameters (page and limit), defaulting to page=1 and limit=30
+    try:
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 30))
+        limit = limit if limit%2 == 0 else limit + 1
+    except ValueError:
+        # If page or limit cannot be cast to integer, return bad request with error message
+        return make_response(jsonify({
+            "error": "Invalid page or limit parameter. Must be an integer.",
+            "history": [],
+            "page": 1,
+            "limit": 5,
+            "form_id": session.get('form_id', '')
+        }), 400)
 
     try:
-        # Return the user's chat history
-        # print("session fron /api/history:", session)
+        # Check if the user has chat history
+        if user_id not in user_chat_histories:
+            raise ValueError("User history not found")
+
+        user_history = user_chat_histories[user_id]
+
+        # Reverse the history so the most recent messages are first
+        reversed_history = user_history[::-1]
+
+        # Calculate the index for pagination
+        skip = (page - 1) * limit
+        paginated_history = reversed_history[skip: skip + limit]
+
+        # Prepare the response with paginated chat history
         resp = make_response(jsonify({
-            "history": user_chat_histories[user_id],
-            'form_id': session.get('form_id', '')
+            "history": paginated_history[::-1],  # Reverse back to keep original order per page
+            "page": page,
+            "limit": limit,
+            "form_id": session.get('form_id', '')
         }))
-        # Pretiffy the JSON response
         resp.headers['Content-Type'] = 'application/json'
 
-        # print("*"*20, "responses and requests from /api/history", len(user_chat_histories), "*"*20)
-        # for response in user_chat_histories[user_id]:
-            # print(response["role"], ":", response['parts'])
     except Exception as e:
         print("ERROR while loading history from /api/history")
         print("Exception:", e)
 
-        resp = make_response(jsonify({"history": [], 'form_id': session.get('form_id', '')}))
-
-        print("session from /api/history:", session)
+        resp = make_response(jsonify({
+            "error": str(e),
+            "history": [],
+            "page": page,
+            "limit": limit,
+            "form_id": session.get('form_id', '')
+        }))
 
     return resp
 
