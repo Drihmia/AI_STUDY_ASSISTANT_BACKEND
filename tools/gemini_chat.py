@@ -1,6 +1,7 @@
 import google.generativeai as genai
 import os
 from system_prompt import system_prompt_parts
+from IPython.display import HTML
 
 # System prompt for the Gemini model
 system_prompt = {
@@ -21,8 +22,13 @@ def gemini_model(system_messages: dict, api_key: str) -> genai.GenerativeModel:
 
     client_gemini = genai.configure(api_key=api_key)
     model=genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
+        model_name="gemini-2.0-flash-thinking-exp-01-21",
         system_instruction=system_messages.get("parts"),
+        generation_config={
+            "top_p": 0.98,
+            "temperature": 0.5,
+            "response_mime_type": "text/plain"
+        },
     )
 
     return model
@@ -36,4 +42,7 @@ def chat_gemini(system_messages: dict) -> str:
     """
 
     response = _gemini_model.generate_content(system_messages).text.strip()
+    print("+"*200)
+    print(response.removeprefix("```html").removesuffix("```").strip())
+    print("+"*200)
     return '\n' + response.removeprefix("```html").removesuffix("```").strip()
