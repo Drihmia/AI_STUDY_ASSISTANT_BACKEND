@@ -2,10 +2,12 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, make_response, session
 from flask_cors import CORS
+from flask_compress import Compress
 import google.generativeai as genai
 from os import getenv
 from re import sub
 import signal
+from threading import Thread
 from uuid import uuid4
 from system_prompt import system_prompt_parts
 from tools.utils import (load_chat_history,
@@ -13,11 +15,21 @@ from tools.utils import (load_chat_history,
                          handle_signal,
                          load_chat_history_startup
                          )
+from tools.chat_utils import update_form_with_unique_ids
 from tools.gemini_chat import chat_gemini
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# Initialize the Compress extension
+Compress(app)
+
+# Set the Compress configuration
+app.config['COMPRESS_MIN_SIZE'] = 500
+app.config['COMPRESS_LEVEL'] = 9
+app.config['COMPRESS_ALGORITHM'] = 'gzip'  # Force gzip
+app.config['COMPRESS_MIMETYPES'] = [ 'application/json' ]
 
 # Set the secret key for the session
 app.secret_key = getenv('SECRET_KEY')
@@ -38,8 +50,9 @@ CORS(app)
 # Path to the directory where chat histories are saved
 history_dir = 'chat_histories/'
 
-# Dictionary to store chat histories for each user (identified by cookies)
-user_chat_histories = load_chat_history_startup({}, history_dir)
+user_chat_histories = {}
+
+last_message_user = {}
 
 # Load the chat histories on server startup
 load_chat_history_startup(user_chat_histories, history_dir)
@@ -71,8 +84,6 @@ def chat_endpoint():
 
     # ensure there's a history for the user by loading their specific history file
     if user_id not in user_chat_histories.keys():
-        # print("user_id:", user_id, "not in user_chat_histories from /api/chat")
-        # print("user_ids in history are:", user_chat_histories.keys())
         user_chat_histories[user_id] = []
 
     user_message = ""
@@ -80,7 +91,6 @@ def chat_endpoint():
         # get the user message from the request
         user_message = request.json.get('message', "").strip()
     answers = session.get('answers')
-    # print("answers:", answers)
 
     if answers:
         formatted_answers = [k + ': ' + v for k, v in answers.items()]
@@ -88,17 +98,25 @@ def chat_endpoint():
     session['answers'] = None
 
     if not user_message:
-        return jsonify({ "response": '' })
+        return jsonify({ "response": '', "form_id": session.get('form_id', '') })
+
+    if last_message_user.get(user_id) == user_message:
+        print("User message is the same as the last message", "+" * 20)
+        return jsonify({ "response": '', "form_id": session.get('form_id', '') })
+
+    print("*" * 50)
+    print("Last message user:", last_message_user.get(user_id))
+    print("*" * 50)
+    last_message_user[user_id] = user_message
+    print("User message:", user_message)
+    print("*" * 50)
 
     # append the user's message to the chat history
-    user_chat_histories[user_id].append({"role": "user", "parts": (user_message)})
+    temp_list = [{"role": "user", "parts": (user_message)}]
 
     # get the response from the ai
-    response: str = chat_gemini(user_chat_histories[user_id])
-    # print("-+"*100)
-    # print("response:", response)
-    # print("-+"*100random_string)
-    random_string = ""
+    response: str = chat_gemini(user_chat_histories[user_id] + temp_list)
+    random_string = session.get('form_id', '')
     if '<form ' in response:
         pattern = r'(<form\s+[^>]*id=")[^"]*(")'
         random_string = '-' + str(uuid4())
@@ -107,6 +125,7 @@ def chat_endpoint():
         res = response
         try:
             response = sub(pattern, replacement, response)
+            response = update_form_with_unique_ids(response)
         except Exception as e:
             print("ERROR while replacing the form id")
             print("Exception:", e)
@@ -114,19 +133,19 @@ def chat_endpoint():
                         "Sorry, there was an error with this form. \
                         Please communicate with us using this code: "
                         + random_string)
-            random_string = ""  # reset the random string if there's an error
+            # random_string = ""  # reset the random string if there's an error
 
-        if res != response:
-            session['form_id'] = random_string
+        # if res != response:
+        session['form_id'] = random_string
 
     # append the model's response to the chat history
-    user_chat_histories[user_id].append({"role": "model", "parts": (response)})
-    save_chat_history(user_chat_histories[user_id], user_id, history_dir)
+    temp_list.append({"role": "model", "parts": (response)})
+    user_chat_histories[user_id].extend(temp_list)
+    # save_chat_history(user_chat_histories[user_id], user_id, history_dir)
+    Thread(target=save_chat_history, args=(user_chat_histories[user_id], user_id, history_dir), daemon=True).start()
 
 
-    # print("-+"*100)
-    # print("user_chat_histories:", user_chat_histories[user_id])
-    # print("-+"*100)
+
 
     # set the user id in the response cookie
     resp = make_response(jsonify({ "response": response, "form_id": random_string }))
@@ -153,7 +172,7 @@ def load_history():
     # Get pagination parameters (page and limit), defaulting to page=1 and limit=30
     try:
         page = int(request.args.get('page', 1))
-        limit = int(request.args.get('limit', 30))
+        limit = int(request.args.get('limit', 200))
 
         # Ensure limit is even
         if limit % 2 != 0:

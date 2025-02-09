@@ -1,5 +1,5 @@
 .env
-
+*test*
 chat_histories.json
 *error*
 *access*

@@ -51,17 +51,22 @@ Liaisons covalentes :Un ou plusieur doublets liants se forme lorsque deux atomes
 
 Structure électronique des atomes :
 
-Hydrogène (H, Z = 1) : K(1), monovalent.
+Hydrogène (H, Z = 1) : K(1), nombre de doublets liants : ndl = 2 - P = 2 - 1 = 1, H est monovalent.
 
-Oxygène (O, Z = 8) : K(2) L(6), bivalent.
+Chlore (Cl, Z = 17) : K(2) L(8) M(7), nombre de doublets liants : ndl = 8 - P = 8 - 7 = 1, Cl est monovalent.
 
-Azote (N, Z = 7) : K(2) L(5), trivalent.
+Oxygène (O, Z = 8) : K(2) L(6), nombre de doublets liants: ndl = 8 - P = 8 - 6 = 2, divalent.
 
-Carbone (C, Z = 6) : K(2) L(4), tétravalent.
+Azote (N, Z = 7) : K(2) L(5), nombre de doublets liants : ndl = 8 - P = 8 - 5 = 3, trivalent.
+
+Carbone (C, Z = 6) : K(2) L(4), nombre de doublets liants : ndl = 8 - P = 8 - 4 = 4, tétravalent.
 
 Représentation de Lewis :
 
-Permet de représenter les doublets liants et non liants des molécules.
+Permet de représenter:
+    - les élements de la molécule.
+    - les doublets liants.
+    - les doublets non liants s'ils existent.
 
 Exemples :
 
@@ -69,7 +74,17 @@ H₂O : Molécule coudée avec deux doublets non liants sur l’oxygène.
 
 CH₄ : Structure tétraédrique centrée sur le carbone.
 
-CO₂ : Structure linéaire avec deux liaisons doubles.
+CO₂ : Structure linéaire avec deux liaisons doubles et deux doublets non liants sur l’oxygène.
+
+NH₃ : Pyramide à base triangulaire avec un doublet non liant sur l’azote.
+
+Relations liée à la représentation de Lewis :
+    + Pour calculer le nombre de doublets liants, on utlise la formule :
+        * ndl = 8 - P, si l'atome respecte la règle de l'octet. C-à-d, si son Z > 5.
+        * ndl = 2 - P, si l'atome ne respecte pas la règle de l'octet. C-à-d, si son Z < 5.
+        où P est le nombre d'électrons de valence de l'atome.
+    + Pour calculer le nombre de doublets non liants, on utilise la formule :
+        * ndnl = (P - ndl) / 2
 
 III – Isomères et Géométrie Moléculaire
 
@@ -91,7 +106,7 @@ Exemples :
 
 CH₄ : Géométrie tétraédrique, les doublets liants se répartissent uniformément.
 
-NH₃ : Pyramide à base triangulaire, avec un doublet non liant au sommet.
+NH₃ : Pyramide à base triangulaire, avec un doublet non liant au sommet (azote).
 
 H₂O : Structure coudée due aux deux doublets non liants sur l’oxygène.
 
@@ -102,7 +117,9 @@ Notes et Équivalences Terminologiques
 Configuration électronique = Structure électronique = Répartition électronique.
 Externe = de valence = périphérique.
 
-Liaison covalente = Doublet d’électrons liants.
+Liaison covalente simple = Doublet d’électrons liants.
+Liaison covalente double = Deux doublets d’électrons liants.
+Liaison covalente triple = Trois doublets d’électrons liants.
 
 
 Traduction :
