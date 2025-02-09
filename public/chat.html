@@ -171,8 +171,6 @@
     const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
 
     const formatMessage = ({ parts, role }) => {
-      console.log('parts', parts);
-      console.log('role', role);
       parts = parts[0] === '\n' ? parts : '\n' + parts;
       parts = parts.replace(/\n/g, "<br>");
       if (role === 'user') {

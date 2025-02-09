@@ -8,7 +8,7 @@ def load_chat_history(user_id, history_dir="chat_histories"):
     # print("loading user history from:", user_history_file)
     if os.path.exists(user_history_file):
         try:
-            with open(user_history_file, 'r') as json_file:
+            with open(user_history_file, 'r', encoding='utf-8') as json_file:
                 return json.load(json_file)
         except json.JSONDecodeError:
             # print("-"*40)
@@ -21,7 +21,7 @@ def load_chat_history(user_id, history_dir="chat_histories"):
 # Function to save chat histories to a user-specific file
 def save_chat_history(user_chat_histories_user, user_id, history_dir="chat_histories"):
     user_history_file = os.path.join(history_dir, f"history_{user_id}.json")
-    with open(user_history_file, 'w') as json_file:
+    with open(user_history_file, 'w', encoding='utf-8') as json_file:
         try:
             json.dump(user_chat_histories_user, json_file, indent=4)
         except json.JSONDecodeError:
