@@ -226,24 +226,28 @@ Introduction :
 
 1. Energie potentielle de pesanteur :
     Activité : une grue soulève une charge par un câble de A vers B.
-        - 1. En appliquant le théorème d'énergie cinétique sur la charge. Calculer le travail de la tension de câble pour soulever la charge de masse m du point A d'altitude zĄ au point B d'altitude zB. ΔEc = W_AB(vectuer T) + W_AB(vecteur P). Assuming initial and final velocities are zero, ΔEc = 0. W_AB(vectuer T) = -W_AB(vecteur P) = -mg(zA - zB) = mg(zB - zA)
+        - 1. En appliquant le théorème d'énergie cinétique sur la charge. Calculer le travail de la tension de câble pour soulever la charge de masse m du point A d'altitude zĄ au point B d'altitude zB.
+        + ΔEc = W_AB(vectuer T) + W_AB(vecteur P). puisque le mouvement est rectiligne uniforme alors ΔEc = 0 <=> W_AB(vectuer T) + W_AB(vecteur P) = 0 <=> W_AB(vectuer T) = -W_AB(vecteur P) = -mg(zA - zB) = mg(zB - zA)
+
         - 2. Le travail de cette tension se transforme en énergie qui sera emmagasinée par le câble. De quoi dépend cette énergie? à quoi s'appeler cette énergie ? Dépend de la masse et de la différence d'altitude. Energie potentielle de pesanteur.
+        + l'énergie potentielle de pesanteur depend de la masse du corps et de sa position par rapport à la terre. Elle est appelée énergie potentielle de pesanteur.
 
 1. Définition :
     - L'énergie potentielle de pesanteur d'un solide est l'énergie que possède un solide du fait de sa position par rapport à la terre. Elle résulte de l'interaction gravitationnelle entre le solide et la terre, Elle est notée Epp. Il s'exprime en joule (J).
 
 2. L'expression de l'énergie potentielle de pesanteur :
-    - L'énergie potentielle de pesanteur d'un solide de masse m est donnée par la relation suivante : Epp = mgz
+    - L'énergie potentielle de pesanteur d'un solide de masse m est donnée par la relation suivante : Epp = mgz + Cte
         - Epp: Energie potentielle de pesanteur (J)
         - m: masse (kg)
         - g: intensité de pesanteur (N/kg)
         - z: altitude (m)
+        -Cte : constante à déterminer en fonction de l'état de référence choisi.
 
-Par convention Epp d'un corps est nulle au niveau pris comme état de référence. Soit zo l'altitude de l'état de référence. c.à.d. Epp(zo) = 0. Donc : Cte = -mgzo. Alors : Epp = mgz - mgzo = mg(z - zo)
+Par convention Epp d'un corps est nulle au niveau pris comme état de référence. Soit zo l'altitude de l'état de référence. c.à.d. Epp(zo) = 0 <=> mgz0 + Cte = 0 . Donc : Cte = -mgzo. Alors : Epp = mgz + Cte = mgz - mgzo = mg(z - zo)
 - L'expression de l'énergie potentielle de pesanteur devient : Epp = mg(z - zo)
-    - Si le corps au-dessus de l'état de référence Epp > 0
-    - Si le corps sous de l'état de référence Epp < 0
-Remarque: Si état de référence est le sol zo = 0 => Epp = mgz
+    - Si le corps au-dessus de l'état de référence Epp > 0 car z > zo donc z - z0 > 0
+    - Si le corps sous de l'état de référence Epp < 0 car z < zo donc z - z0 < 0
+Remarque: Si état de référence est le sol (z = z0) => Epp = 0
 
 Application 1: Un corps ponctuel de masse m= 0.2Kg, posé sur une table de hauteur h=0,8m comme l'indique la figure ci-contre :
 1. Calculer l'énergie potentielle de pesanteur du corps dans chacun des cas suivants :
@@ -251,9 +255,9 @@ Application 1: Un corps ponctuel de masse m= 0.2Kg, posé sur une table de haute
     b. Zo = - 0.2m : Epp = mg(z - zo) = 0.2 * 10 * (0.8 - (-0.2)) = 2 J
 
 3. variation de l'énergie potentielle de pesanteur :
-    - Lorsqu'un corps se déplace de la position A à la position B, la variation de son énergie potentielle de pesanteur : ΔEpp = Epp_B - Epp_A = mg(zB - zA) - mg(zA - zA) = mg(zB - zA) = -W_AB(vecteur P)
-    - Si zB < zA ΔEpp < 0
-    - Si zB > zA ΔEpp > 0
+    - Lorsqu'un corps se déplace de la position A à la position B, la variation de son énergie potentielle de pesanteur : ΔEpp = Epp_B - Epp_A = mg(zB - z0) - mg(zA - z0) = mg(zB - z0 - zA + z0) = mg(zB - zA) = -W_AB(vecteur P)
+    - Si zB < zA ΔEpp < 0 C-à-d : Epp diminue lorsqu'on monte.
+    - Si zB > zA ΔEpp > 0 C-à-d : Epp augmente lorsqu'on descend.
 
 2. Energie mécanique :
     1. Définition :
@@ -265,16 +269,25 @@ Application 1: Un corps ponctuel de masse m= 0.2Kg, posé sur une table de haute
 
 Application 2 : Un corps solide (S) de masse m= 2kg se déplace de A (VA=2m/s) vers B (VB=3m/s) sur un plan AC horizontal et inclinée d'un angle a =20° . On donne AC = 10m st AB = 5m.
 1. Calculer l'énergie mécanique en A et en B. On prend le plan horizontal passant par le point O et C comme état de référence de l'énergie potentielle de pesanteur.
-    - ZA = AB sin(α) = 5 sin(20) = 1.71 m. ZB = 0 m (état de référence). Energie mécanique en A et en B :
-    - Ec_A = 1/2 mVA² = 1/2 * 2 * (2)² = 4 J. Epp_A = mgzA = 2 * 10 * 1.71 = 34.2 J. Em_A = Ec_A + Epp_A = 4 + 34.2 = 38.2 J
-    - Ec_B = 1/2 mVB² = 1/2 * 2 * (3)² = 9 J. Epp_B = mgzB = 0 J. Em_B = Ec_B + Epp_B = 9 + 0 = 9 J
+    - (zA - zB) = AB sin(α)
+    - (zA - zC) = AC sin(α)
+    ** Energie mécanique en A et en B :
+        + Pour A:
+            - Énergie cinétique: Ec_A = 1/2 mvA²
+            - Energie potentielle de pesanteur: Epp_A = mg(zA - zC) = mg AC sin(α)
+            - Energie mécanique: Em_A = Ec_A + Epp_A = 1/2 mvA² + mg AC sin(α) = 1/2 * 2 * (2)² + 2 * 10 * 10 * sin(20) = 4 + 34.2 = 38.2 J
+        + Pour B:
+            - Énergie cinétique: Ec_B = 1/2 mvB²
+            - Energie potentielle de pesanteur: Epp_B = mg(zB - zC) = mg AB sin(α)
+            - Energie mécanique: Em_B = Ec_B + Epp_B = 1/2 mvB² + mg AB sin(α) = 1/2 * 2 * (3)² + 2 * 10 * 5 * sin(20) = 9 + 17.1 = 26.1 J
+
 
 2. Conservation de l'énergie mécanique :
     a. Cas d'un corps en chute libre :
         - On considère un corps solide de masse m en chute libre sous l'action de son poids.
         - En appliquant le théorème de l'énergie cinétique sur le corps entre les positions G1 et G2, ΔEc = W_G1G2(vecteur P)
-            - La variation de l'énergie cinétique est : ΔEc = sum(W_G1G2(vecteur P))
-            - La variation de l'énergie potentielle de pesanteur est : ΔEpp = Epp2 - Epp1 = -W_G1G2(vecteur P)
+            - La variation de l'énergie cinétique est : ΔEc = W_G1G2(vecteur P)
+            - La variation de l'énergie potentielle de pesanteur est : ΔEpp = - W_G1G2(vecteur P)
             - Donc la variation de l'énergie mécanique est : ΔEm = ΔEc + ΔEpp = W_G1G2(vecteur P) - W_G1G2(vecteur P) = 0
         - Alors : Em = Cte
         - Lorsqu'on un corps solide en chute libre, son énergie mécanique reste constante tout au long du mouvement. On dit qu'elle se conserve.
@@ -282,39 +295,61 @@ Application 2 : Un corps solide (S) de masse m= 2kg se déplace de A (VA=2m/s) v
 
 b. Cas de glissement d'un corps solide sans frottement sur un plan incliné :
     - On considère un corps solide en état de glissement sans frottement sur un plan incliné.
-    - En appliquant le théorème de l'énergie cinétique sur le corps entre les positions A et B. ΔEc = ΣW_AB(vecteur Fext) = W_AB(vecteur P) + W_AB(vectuer RN) = W_AB(vecteur P)
+    - En appliquant le théorème de l'énergie cinétique sur le corps entre les positions A et B. ΔEc = ΣW_AB(vecteur Fext) = W_AB(vecteur P) + W_AB(vectuer R) = W_AB(vecteur P) + W_AB(vectuer RN) = W_AB(vecteur P)
         - La variation de l'énergie cinétique est : ΔEc = W_AB(vecteur P)
-        - La variation de l'énergie potentielle de pesanteur est : ΔEpp = Epp_B - Epp_A = -W_AB(vecteur P)
+        - La variation de l'énergie potentielle de pesanteur est : ΔEpp = - W_AB(vecteur P)
         - Donc la variation de l'énergie mécanique est : ΔEm = ΔEc + ΔEpp = W_AB(vecteur P) - W_AB(vecteur P) = 0
         - Alors : Em = Cte
         - Lorsqu'on un corps solide en mouvement de glissement sans frottement, son énergie mécanique reste constante tout au long du mouvement.
 
 3. pas de conservation de l'énergie mécanique :
     - On considère un corps solide en état de glissement avec frottement sur un plan incliné.
-    - En appliquant le théorème de l'énergie cinétique sur le corps entre les positions A et B. ΔEc = ΣW_AB(vecteur Fext) = W_AB(vecteur P) + W_AB(vectuer RN) + W_AB(vectuer f) = W_AB(vecteur P) + W_AB(vectuer f)
+    - En appliquant le théorème de l'énergie cinétique sur le corps entre les positions A et B. ΔEc = ΣW_AB(vecteur Fext) = W_AB(vecteur P) + W_AB(vectuer R) = W_AB(vecteur P) + W_AB(vectuer RN) + W_AB(vectuer f) = W_AB(vecteur P) + W_AB(vectuer f)
         - La variation de l'énergie cinétique est : ΔEc = W_AB(vecteur P) + W_AB(vectuer f)
-        - La variation de l'énergie potentielle de pesanteur est : ΔEpp = Epp_B - Epp_A = -W_AB(vecteur P)
+        - La variation de l'énergie potentielle de pesanteur est : ΔEpp = -W_AB(vecteur P)
         - Donc la variation de l'énergie mécanique est : ΔEm = ΔEc + ΔEpp = W_AB(vecteur P) + W_AB(vectuer f) - W_AB(vecteur P) = W_AB(vectuer f) ≠ 0
         - Alors : Em ≠ Cte
         - Lorsqu'on un corps solide en mouvement de glissement avec frottement, son énergie mécanique va diminue au cours du mouvement. ΔEm = W_AB(vectuer f) < 0
     - Interprétation : Les forces de frottements ne sont pas conservatives car à cause de leur travail l'énergie mécanique du système diminue, cette diminution est due à une perte d'une partie de l'énergie mécanique par frottement sous forme d'énergie calorifique (chaleur). Q = - ΔEm = - W_AB(vectuer f) > 0 .
 
-Application 4 : On considère un corps solide (S) de masse m = 0,65 Kg peut se déplacer sur un rail ABCD composé des parties suivantes : - une partie AB inclinée d'un angle a =30° par rapport au plan horizontal. - une partie BC de forme circulaire de rayon r=1,5 m. - une partie CD rectiligne et horizontale. On prend: g = 10 N/Kg.
+Application 4 : On considère un corps solide (S) de masse m = 0,65 Kg peut se déplacer sur un rail ABCD composé des parties suivantes :
+    - une partie AB inclinée d'un angle a =30° par rapport au plan horizontal.
+    - une partie BC de forme circulaire de rayon r=1,5 m.
+    - une partie CD rectiligne et horizontale. On prend: g = 10 N/Kg.
 1. Le mouvement de (S) sur la partie AB : les frottements sont négligeables Le solide (S) part du point A sans vitesse initiale (VA= 0) et il passe par le point B avec une vitesse VB= 4,3 m/s.
-    a. Calculer l'énergie cinétique Ec au point A et au pont B, en déduire la variation de l'énergie cinétique entre A et B. Ec_A = 0 J. Ec_B = 1/2 mVB² = 1/2 * 0.65 * (4.3)² = 6.01 J. ΔEc = Ec_B - Ec_A = 6.01 J
+    a. Calculer l'énergie cinétique Ec au point A et au pont B, en déduire la variation de l'énergie cinétique entre A et B.
+        + Pour A: Énergie cinétique: Ec_A = 0 J (car vA = 0 m/s)
+        + Pour B: Énergie cinétique: Ec_B = 1/2 mVB² = 1/2 * 0.65 * (4.3)² = 6.01 J
+        + Variation de l'énergie cinétique: ΔEc = Ec_B - Ec_A = 6.01 - 0 = 6.01 J
 
-b. En appliquant le théorème d'énergie cinétique, Montrer que la distance AB = 1,85 m. ΔEc = W_AB(vecteur P) = mgh = mg AB sin(α). AB = ΔEc / (mg sin(α)) = 6.01 / (0.65 * 10 * sin(30)) = 1.85 m
+b. En appliquant le théorème d'énergie cinétique, Montrer que la distance AB = 1,85 m.
+    + ΔEc = W_AB(vecteur P) + W_AB(vecteur R) = W_AB(vecteur P) = mgh_AB = mg AB sin(α) => AB = ΔEc / (mg sin(α)) = 6.01 / (0.65 * 10 * sin(30)) = 1.849 m = 1.85 m
 
 2- Le mouvement de (S) sur la partie BC : les frottements sont négligeables Le solide (S) aborde la piste BC et arrive au point C avec une vitesse Vc =5,477 m/s . On prend le plan horizontal passant par le point C comme état de référence de l'énergie potentielle de pesanteur.
-    a. Calculer la valeur d'énergie potentielle au point B.en déduire l'énergie mécanique au point B. ZB = AB sin(α) = 1.85 * sin(30) = 0.925 m. Epp_B = mgZB = 0.65 * 10 * 0.925 = 6.01 J. Em_B = Ec_B + Epp_B = 6.01 + 6.01 = 12.02 J
-    b. En appliquant la conservation d'énergie mécanique entre B et C, trouver la valeur d'énergie cinétique Ec au point C. Em_C = Em_B = 12.02 J. Em_C = Ec_C + Epp_C. Epp_C = 0 J (reference level). Ec_C = Em_C = 12.02 J
-    c. En déduire la valeur de la vitesse Vc en point C. Vc = √(2Ec_C / m) = √(2 * 12.02 / 0.65) = 6.08 m/s **Velocity in problem description Vc =5,477 m/s is different from calculated value**
-    d. En utilisant le principe de la conservation d'énergie mécanique, retrouver la valeur de la vitesse Vc en point C. **Same as c, result should be the same**
+    a. Calculer la valeur d'énergie potentielle au point B.en déduire l'énergie mécanique au point B.
+    + (zB - zC) = r .
+    + Énergie potentielle de pesanteur au point B: Epp_B = mg(zB - zC) = mg r = 0.65 * 10 * 1.5 = 9.75 J .
+    + Énergie mécanique au point B: Em_B = Ec_B + Epp_B = 6.01 + 9.75 = 15.76 J
+
+    b. En appliquant la conservation d'énergie mécanique entre B et C, trouver la valeur d'énergie cinétique Ec au point C.
+    + Puisque le corps se glisse sans frottements, alors l'énergie mécanique se conserve.
+        C-à-d: Em_B = Em_C => Ec_C + Epp_C = Ec_B + Epp_B => Ec_C = Ec_B + Epp_B - Epp_C = Ec_B + Epp_B = 15.76 J . (car Epp_C = 0 J)
+
+    c. En déduire la valeur de la vitesse Vc en point C.
+    + On sait que Ec_C = 1/2 mVc² <=> 2 * Ec_C = mVc² <=> Vc² = 2 * Ec_C / m  <=> Vc = √(2 * Ec_C / m) = √(2 * 15.76 / 0.65) = 5.477 m/s
+
+    d. En utilisant le théorème d'énergie cinétique, retrouver la valeur de la vitesse Vc en point C.
+    + D'après le théorème d'énergie cinétique, on a : ΔEc = ΣW_BC(vecteur Fext) = W_BC(vecteur P) + W_BC(vectuer R) = W_BC(vecteur P) = mg(zB- zC) = mgr
+    + On sait que ΔEc = Ec_C - Ec_B. Alors : Ec_C - Ec_B = mgr => Ec_C = Ec_B + mgr  <=> 1/2 mVc² = Ec_B + mgr <=> Vc² = 2(Ec_B + mgr) / m <=> Vc = √(2(Ec_B + mgr) / m) = √(2(6.01 + 0.65 * 10 * 1.5) / 0.65) = 5.477 m/s
 
 3- Le mouvement de (S) sur la partie CD : les frottements ne sont pas négligeables Le solide (S) aborde la piste CD et s'arrête au point D, avec frottement équivalent à une force horizontale d'intensité f = 2,6 N constante et de sens opposé.
-    a. En appliquant le théorème d'énergie cinétique entre C et D, montrer que l'expression de la distance CD est : CD = (m.v² / 2.f) calculer sa valeur. ΔEc = ΣW_CD(vecteur Fext) = W_CD(vectuer f) = -f . CD. ΔEc = Ec_D - Ec_C = 0 - Ec_C = -Ec_C = -1/2 mVc². -Ec_C = -f . CD => CD = Ec_C / f = (1/2 mVc²) / f = mVc² / 2f. CD = (0.65 * (5.477)²) / (2 * 2.6) = 1.85 m
-    b. Calculer la valeur de l'énergie perdue sous forme de chaleur entre A et B. **Should be between C and D, not A and B. Q = -W_CD(vectuer f) = f . CD = 2.6 * 1.85 = 4.81 J**
-    c. En appliquant le T.E.C entre C et D, montrer que l'expression de l'intensité f est : f = m.v² / 2.CD , calculer sa valeur. **Already shown in a. f = mVc² / 2CD = 2.6 N (given value)**
+    a. En appliquant le théorème d'énergie cinétique entre C et D, montrer que l'expression de la distance CD est : CD = mVc² / (2f) .
+    + ΔEc = ΣW_CD(vecteur Fext) = W_CD(vectuer P) + W_CD(vectuer R) = W_CD(vectuer f) = -f . CD .
+    + On sait que ΔEc = Ec_D - Ec_C. Alors : Ec_D - Ec_C = -f . CD => - Ec_C = -f . CD => 1/2 mVc² = f . CD => CD = mVc² / 2f .
+    + Application Numérique: CD = 0.65 * (5.477)² / (2 * 2.6) = 1.85 m
+
+    b. Calculer la valeur de l'énergie perdue sous forme de chaleur entre C et D.
+    + Q = - ΔEm_CD = - (-f . CD) = f . CD = 2.6 * 1.85 = 4.81 J
 
 Exercice de PH4: Travail et énergie potentielle de pesanteur - Energie mécanique - 1/2
 
