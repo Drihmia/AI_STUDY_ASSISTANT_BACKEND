@@ -17,10 +17,14 @@ def update_form_with_unique_ids(form_html):
 
     # Assign unique random IDs to each element and update the corresponding label
     for element in form_elements:
+
+        old_id = element.get('id')
+        if not old_id:
+            continue
+
         # Generate a unique ID for the element
         unique_id = generate_random_string()
 
-        old_id = element.get('id')
         # Update the element with the unique ID
         element['id'] = unique_id
 
@@ -31,6 +35,32 @@ def update_form_with_unique_ids(form_html):
             label['for'] = unique_id
 
     return str(soup)
+
+
+def update_time_in_time_tag(message, time):
+    # Parse the HTML
+    soup = BeautifulSoup(message, 'html.parser')
+
+    # Find all time tags
+    time_tags = soup.find_all('time')
+
+    # Update the time attribute in each time tag
+    for time_tag in time_tags:
+        time_tag.string = time
+
+        # Remove the 'dir' attribute if present
+        if time_tag.has_attr('dir'):
+            del time_tag['dir']
+
+        # Check if the time tag has a previous sibling and if it is not a <br> tag
+        if (not time_tag.previous_sibling or time_tag.previous_sibling.name != "br"):
+            br_tag = soup.new_tag("br")
+            # Insert the <br> before the target tag
+            time_tag.insert_before(br_tag)
+
+    return str(soup)
+
+
 if __name__ == '__main__':
     # Example form HTML
     form_html = '''
@@ -335,3 +365,33 @@ if __name__ == '__main__':
 
     # Print the updated form
     print(updated_form_html)
+
+
+    content_with_time_tag = '''
+        <div class="p-4">
+        <p class="text-gray-800 text-xl font-semibold mb-4">
+            أنا آسف على التكرار، يبدو أنني لم أستوعب سؤالك بشكل صحيح في المرة الأولى.
+        </p>
+        <p class="text-gray-700 mb-2">
+            النظام شبه المعزول (système pseudo-isolé) <span class="font-semibold">لا يمكن أن يغير حالته الحركية من تلقاء نفسه</span>. هذا يعني أنه:
+        </p>
+        <ul class="list-disc list-inside text-gray-700">
+            <li>
+                إذا كان في حالة <span class="font-semibold">حركة مستقيمة منتظمة</span>، فإنه سيستمر في هذه الحركة إلى الأبد، ما لم تؤثر عليه قوة خارجية.
+            </li>
+            <li>
+                إذا كان في حالة <span class="font-semibold">سكون</span>، فإنه سيظل ساكناً إلى الأبد، ما لم تؤثر عليه قوة خارجية.
+            </li>
+        </ul>
+        <p class="text-gray-700 mb-2">
+            لذا، لا يمكن للنظام شبه المعزول أن "يختار" بين الحركة المستقيمة المنتظمة والسكون. حالته الحركية تحددها سرعته الابتدائية، ويبقى عليها ما لم تتغير الظروف الخارجية.
+        </p>
+        <p class="text-gray-700 mb-2">
+            هل هذا التوضيح أفضل؟
+        </p>
+        </div><br><time>2025-02-23T15:46:19.977325+00:00</time>
+    '''
+
+    # Update the time attribute in the time tag
+    updated_content = update_time_in_time_tag(content_with_time_tag, 'wqkdjqwdkqw')
+    print(updated_content)
