@@ -13,10 +13,14 @@ from system_prompt import system_prompt_parts
 from tools.utils import (load_chat_history,
                          save_chat_history,
                          handle_signal,
-                         load_chat_history_startup
+                         load_chat_history_startup,
+                         append_current_time,
                          )
 from tools.chat_utils import update_form_with_unique_ids
-from tools.gemini_chat import chat_gemini
+from tools.gemini_chat import (
+    chat_gemini_generate_content,
+    chat_gemini_send_message,
+)
 
 load_dotenv()
 
@@ -76,6 +80,7 @@ def chat_endpoint():
     # get the user id from the cookie
     user_id = request.cookies.get('user_id')
     usr_id_exist = 1
+    model_number = 1
 
     if not user_id:
         # if no user id, generate a new one (this is only for new users)
@@ -92,9 +97,17 @@ def chat_endpoint():
         user_message = request.json.get('message', "").strip()
     answers = session.get('answers')
 
+    structured_message_based_on_user_language = {
+        'en': 'my answers to your test are',
+        'fr': 'mes réponses à votre test sont',
+        'ar': 'إجاباتي على اختبارك هي',
+    }
+
     if answers:
-        formatted_answers = [k + ': ' + v for k, v in answers.items()]
-        user_message = f"My answers to your test are:<br>&emsp;➔ {"<br>&emsp;➔ ".join(formatted_answers)}<br>"
+        language = answers.get('language', 'en')
+        print("answers:", answers)
+        formatted_answers = [k + ': ' + v for k, v in answers.items() if k != 'language']
+        user_message = f"{structured_message_based_on_user_language.get(language)}:<br>&emsp;➔ {"<br>&emsp;➔ ".join(formatted_answers)}<br>"
     session['answers'] = None
 
     if not user_message:
@@ -112,10 +125,56 @@ def chat_endpoint():
     print("*" * 50)
 
     # append the user's message to the chat history
-    temp_list = [{"role": "user", "parts": (user_message)}]
+    temp_list = [{"role": "user", "parts": (append_current_time('user', user_message))}]
 
     # get the response from the ai
-    response: str = chat_gemini(user_chat_histories[user_id] + temp_list)
+    try:
+        response: str = chat_gemini_generate_content(user_chat_histories[user_id] + temp_list)
+        print("response from gemini_generate_content:", response[-100:-1] + response[-1])
+        model_number = 1
+    except Exception as e:
+        print("ERROR while generating content")
+        print("Exception:", e)
+        try:
+            response: str = chat_gemini_send_message(user_chat_histories[user_id] + temp_list, user_message)
+            model_number = 2
+        except Exception as e:
+            print("ERROR while sending message")
+            print("Exception:", e)
+            response = "Sorry, I am unable to generate a response at the moment. Please try again later."
+
+    hopeless = False
+    while response and not response.strip():
+        print("=" * 50, end=' ')
+        print("response is empty", end=' ')
+        print("=" * 50)
+        if model_number == 1:
+            try:
+                response = chat_gemini_generate_content(user_chat_histories[user_id] + temp_list)
+            except Exception as e:
+                print("ERROR while generating content after response is empty")
+                print("Exception:", e)
+
+                if hopeless:
+                    response = "Sorry, I am unable to generate a response at the moment. Please try again later."
+                    hopeless = False
+                    break
+                model_number = 2
+                hopeless = True
+        elif model_number == 2:
+            try:
+                response = chat_gemini_send_message(user_chat_histories[user_id] + temp_list, user_message)
+            except Exception as e:
+                print("ERROR while sending message after response is empty")
+                print("Exception:", e)
+
+                if hopeless:
+                    response = "Sorry, I am unable to generate a response at the moment. Please try again later."
+                    hopeless = False
+                    break
+                model_number = 1
+                hopeless = True
+
     random_string = session.get('form_id', '')
     if '<form ' in response:
         pattern = r'(<form\s+[^>]*id=")[^"]*(")'
@@ -139,7 +198,7 @@ def chat_endpoint():
         session['form_id'] = random_string
 
     # append the model's response to the chat history
-    temp_list.append({"role": "model", "parts": (response)})
+    temp_list.append({"role": "model", "parts": append_current_time('model', response)})
     user_chat_histories[user_id].extend(temp_list)
     # save_chat_history(user_chat_histories[user_id], user_id, history_dir)
     Thread(target=save_chat_history, args=(user_chat_histories[user_id], user_id, history_dir), daemon=True).start()
@@ -148,7 +207,7 @@ def chat_endpoint():
 
 
     # set the user id in the response cookie
-    resp = make_response(jsonify({ "response": response, "form_id": random_string }))
+    resp = make_response(jsonify({ "response": temp_list[1].get('parts', 'something went wrong'), "form_id": random_string }))
     print("session from /api/chat:", session)
 
     if not usr_id_exist:
@@ -258,5 +317,5 @@ if __name__ == '__main__':
     # signal.signal(signal.SIGINT, handle_signal)
     # Register the signal handler for SIGINT (Ctrl+D)
     # signal.signal(signal.SIGTERM, handle_signal)
-    app.run(port=5001, debug=False)
+    app.run(port=5001, debug=True)
 
