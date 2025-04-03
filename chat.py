@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, make_response, session
 from flask_cors import CORS
 from flask_compress import Compress
 import google.generativeai as genai
-from os import getenv
+from os import getenv, path, listdir
 from re import sub
 import signal
 from threading import Thread
@@ -15,6 +15,8 @@ from tools.utils import (load_chat_history,
                          handle_signal,
                          load_chat_history_startup,
                          append_current_time,
+                         get_current_time,
+                         print_logs_with_time,
                          )
 from tools.chat_utils import update_form_with_unique_ids
 from tools.gemini_chat import (
@@ -68,7 +70,7 @@ def before_request():
     Before request
     """
     session.permanent = True
-    print("session from before_request:", session)
+    print_logs_with_time("session from before_request:", session)
 
 
 @app.route('/api/chat', methods=['POST'])
@@ -105,7 +107,7 @@ def chat_endpoint():
 
     if answers:
         language = answers.get('language', 'en')
-        print("answers:", answers)
+        print_logs_with_time("answers:", answers)
         formatted_answers = [k + ': ' + v for k, v in answers.items() if k != 'language']
         user_message = f"{structured_message_based_on_user_language.get(language)}:<br>&emsp;➔ {"<br>&emsp;➔ ".join(formatted_answers)}<br>"
     session['answers'] = None
@@ -114,15 +116,12 @@ def chat_endpoint():
         return jsonify({ "response": '', "form_id": session.get('form_id', '') })
 
     if last_message_user.get(user_id) == user_message:
-        print("User message is the same as the last message", "+" * 20)
+        print_logs_with_time("User message is the same as the last message", "+" * 20)
         return jsonify({ "response": '', "form_id": session.get('form_id', '') })
 
-    print("*" * 50)
-    print("Last message user:", last_message_user.get(user_id))
-    print("*" * 50)
     last_message_user[user_id] = user_message
-    print("User message:", user_message)
-    print("*" * 50)
+    print_logs_with_time("User message:", user_message)
+    print_logs_with_time("*" * 50)
 
     # append the user's message to the chat history
     temp_list = [{"role": "user", "parts": (append_current_time('user', user_message))}]
@@ -130,32 +129,41 @@ def chat_endpoint():
     # get the response from the ai
     try:
         response: str = chat_gemini_generate_content(user_chat_histories[user_id] + temp_list)
-        print("response from gemini_generate_content:", response[-100:-1] + response[-1])
+        print_logs_with_time("response from gemini_generate_content:", response[:10], '\t'*2, response[-50:] + '\n')
+        if not response:
+            raise Exception("Response is empty")
         model_number = 1
     except Exception as e:
-        print("ERROR while generating content")
-        print("Exception:", e)
+        print_logs_with_time("ERROR while generating content")
+        print_logs_with_time("Exception:", e)
         try:
             response: str = chat_gemini_send_message(user_chat_histories[user_id] + temp_list, user_message)
             model_number = 2
         except Exception as e:
-            print("ERROR while sending message")
-            print("Exception:", e)
+            print_logs_with_time("ERROR while sending message")
+            print_logs_with_time("Exception:", e)
+            print_logs_with_time(("+++++*"*10 + "\n")*4)
             response = "Sorry, I am unable to generate a response at the moment. Please try again later."
 
     hopeless = False
+    max_tries = 10
+    tries = 0
+    if not response:
+        response = '\n'
     while response and not response.strip():
-        print("=" * 50, end=' ')
-        print("response is empty", end=' ')
-        print("=" * 50)
+        tries += 1
+        print_logs_with_time("=" * 50, end=' ')
+        print_logs_with_time("response is empty", end=' ')
+        print_logs_with_time("=" * 50)
         if model_number == 1:
             try:
                 response = chat_gemini_generate_content(user_chat_histories[user_id] + temp_list)
             except Exception as e:
-                print("ERROR while generating content after response is empty")
-                print("Exception:", e)
+                print_logs_with_time("ERROR while generating content after response is empty")
+                print_logs_with_time("Exception:", e)
 
                 if hopeless:
+                    print_logs_with_time(("--------1"*10 + "\n")*4)
                     response = "Sorry, I am unable to generate a response at the moment. Please try again later."
                     hopeless = False
                     break
@@ -165,15 +173,22 @@ def chat_endpoint():
             try:
                 response = chat_gemini_send_message(user_chat_histories[user_id] + temp_list, user_message)
             except Exception as e:
-                print("ERROR while sending message after response is empty")
-                print("Exception:", e)
+                print_logs_with_time("ERROR while sending message after response is empty")
+                print_logs_with_time("Exception:", e)
 
                 if hopeless:
+                    print_logs_with_time(("--------2"*10 + "\n")*4)
                     response = "Sorry, I am unable to generate a response at the moment. Please try again later."
                     hopeless = False
                     break
                 model_number = 1
                 hopeless = True
+        if tries >= max_tries:
+            print_logs_with_time("+" * 50, "Max tries reached", "+" * 50)
+            print_logs_with_time(("--------3"*10 + "\n")*4)
+            response = "Sorry, I am unable to generate a response at the moment. Please try again later."
+            response += "<br>The qouta for the day has been reached. Please try again tomorrow."
+            break
 
     random_string = session.get('form_id', '')
     if '<form ' in response:
@@ -186,8 +201,8 @@ def chat_endpoint():
             response = sub(pattern, replacement, response)
             response = update_form_with_unique_ids(response)
         except Exception as e:
-            print("ERROR while replacing the form id")
-            print("Exception:", e)
+            print_logs_with_time("ERROR while replacing the form id")
+            print_logs_with_time("Exception:", e)
             response = (response + "\n\n" +
                         "Sorry, there was an error with this form. \
                         Please communicate with us using this code: "
@@ -207,8 +222,8 @@ def chat_endpoint():
 
 
     # set the user id in the response cookie
-    resp = make_response(jsonify({ "response": temp_list[1].get('parts', 'something went wrong'), "form_id": random_string }))
-    print("session from /api/chat:", session)
+    resp = make_response(jsonify({ "response": temp_list[1].get('parts', 'something went wrong'), "form_id": random_string, 'user_message': temp_list[0].get('parts', 'something went wrong') }))
+    print_logs_with_time("session from /api/chat:", session)
 
     if not usr_id_exist:
         expire_date = datetime.now() + timedelta(days=365)
@@ -279,8 +294,8 @@ def load_history():
         resp.headers['Content-Type'] = 'application/json'
 
     except Exception as e:
-        print("ERROR while loading history from /api/history")
-        print("Exception:", e)
+        print_logs_with_time("ERROR while loading history from /api/history")
+        print_logs_with_time("Exception:", e)
 
         resp = make_response(jsonify({
             "error": str(e),
@@ -302,13 +317,49 @@ def get_answers():
     if request.is_json:
         # Parse the JSON data
         data = request.get_json()
-        # print("data json:", data)
+        # print_logs_with_time("data json:", data)
     else:
         data = request.form.copy()
-        # print("data :", data)
+        # print_logs_with_time("data :", data)
     session['answers'] = data
 
     return chat_endpoint()
+
+@app.route('/api/list_conversations', methods=['GET'], strict_slashes=False)
+def list_conversations():
+    """
+    List all the list_conversations with password
+    """
+
+    if request.args.get('password') != getenv('PASSWORD', "123123"):
+        return jsonify({'status': 'Unauthorized'}), 401
+
+    if path.exists(history_dir):
+        files = listdir(history_dir)
+        # Create a list of tuples (filename, modification time, size in KB)
+        files_with_time = [(file, datetime.fromtimestamp(path.getmtime(path.join(history_dir, file))), f"{path.getsize(path.join(history_dir, file)) / 1024:.2f} KB") for file in files]
+
+        # Sort by modification time
+        files_sorted = sorted(files_with_time, key=lambda x: x[1], reverse=True)
+        return jsonify(files_sorted)
+    return jsonify([])
+
+# Content of a conversation based on the conversation ID
+@app.route('/api/list_conversations/<conversation_id>', methods=['GET'], strict_slashes=False)
+def conversation(conversation_id):
+    """
+    Get the conversation based on the conversation ID
+    """
+
+    if request.args.get('password') != getenv('PASSWORD', "123123"):
+        return jsonify({'status': 'Unauthorized'}), 401
+
+    if conversation_id in user_chat_histories:
+        conversation = user_chat_histories[conversation_id].copy()
+        conversation.reverse()
+        return jsonify(conversation)
+
+    return jsonify({'status': 'Conversation ID not found'}), 404
 
 
 if __name__ == '__main__':
@@ -317,5 +368,6 @@ if __name__ == '__main__':
     # signal.signal(signal.SIGINT, handle_signal)
     # Register the signal handler for SIGINT (Ctrl+D)
     # signal.signal(signal.SIGTERM, handle_signal)
-    app.run(port=5001, debug=True)
+    AI_DEBUG = getenv('AI_DEBUG', False)
+    app.run(port=5001, debug=AI_DEBUG)
 

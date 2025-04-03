@@ -73,7 +73,7 @@ def get_time_zone_name(time_zone):
         print("get_time_zone_name",e)
         return "UTC"
 
-def get_current_time(time_zone):
+def get_current_time(time_zone='Africa/Casablanca', date_object=False):
     """
     Get the current time in the specified time zone
     Args: time_zone: The time zone key
@@ -83,9 +83,13 @@ def get_current_time(time_zone):
     try:
 
         hold = get_time_zone_name(time_zone)
+        if date_object:
+            return datetime.now(hold)
         return datetime.now(hold).strftime("%Y-%m-%d %H:%M:%S")
     except Exception as e:
         print("get_current_time", e)
+        if date_object:
+            return datetime.now()
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def append_current_time(role, message):
@@ -106,9 +110,17 @@ def append_current_time(role, message):
     else:
         if ('<time>' in message) or ('<time ' in message):
             return update_time_in_time_tag(message, current_time)
-        print("append_current_time", message)
         return update_time_in_time_tag(f'{message}<br><time>{current_time}</time>', current_time)
 
+
+# Should take ..args and print them with the current time
+def print_logs_with_time(*message):
+    """
+    Print a message with the current time
+    Args: message: The message to print
+    """
+
+    print(f"[{get_current_time('Africa/Casablanca')}]", *message)
 
 
 if __name__ == "__main__":
