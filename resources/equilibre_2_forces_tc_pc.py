@@ -103,17 +103,17 @@ V' = 232mL
 
 Malgré qu'il s'agit du même corps, le dynamomètre n'indique pas la même intensité dans les deux cas, car l'eau exerce sur le corps une force qui s'appelle: **poussée d'Archimède** dont les caractéristiques sont:
 
-*   **Point d'application:** centre de gravité du liquide déplacé. (centre de poussée)
-*   **Droite d'action:** verticale
-*   **Sens:** vers le haut.
+*   **Point d'application:** C le centre de gravité du liquide déplacé. (centre de poussée)
+*   **Droite d'action:** verticale passant par C.
+*   **Sens:** de C vers le haut.
 *   **Intensité:** poids du liquide déplacé.
 
 **Expression de l'intensité de la poussée d'Archimède:**
 
 Fₐ = ρ<0xE2><0x82><0x99>liquide * V<0xE2><0x82><0x99>déplacé * g
 
-*   ρ<0xE2><0x82><0x99>liquide: étant la masse volumique du liquide en kg/m³
-*   V<0xE2><0x82><0x99>déplacé: étant le volume du liquide déplacé en (m³).
+*   ρ<0xE2><0x82><0x99>liquide: étant la masse volumique du liquide en kg/m³.
+*   V<0xE2><0x82><0x99>déplacé: étant le volume du liquide déplacé en m³.
 *   g: intensité de pesanteur en (N/kg).
 
 ### 4. Exploitation des résultats de l'expérience:

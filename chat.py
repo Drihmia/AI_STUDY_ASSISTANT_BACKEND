@@ -79,8 +79,14 @@ def chat_endpoint():
     Chat endpoint
     """
 
-    # get the user id from the cookie
-    user_id = request.cookies.get('user_id')
+    # Get the user id from args:
+    user_id = request.args.get('user_id')
+    print_logs_with_time("user_id from args:", user_id)
+    if not user_id or user_id == 'undefined':
+        print_logs_with_time("User ID not found in args")
+        return jsonify({ "response": '', "form_id": session.get('form_id', ''), 'error': 'User ID not found' }), 400
+        # get the user id from the cookie
+        user_id = request.cookies.get('user_id')
     usr_id_exist = 1
     model_number = 1
 
@@ -113,11 +119,11 @@ def chat_endpoint():
     session['answers'] = None
 
     if not user_message:
-        return jsonify({ "response": '', "form_id": session.get('form_id', '') })
+        return jsonify({ "response": '', "form_id": session.get('form_id', '') , 'user_message': user_message })
 
     if last_message_user.get(user_id) == user_message:
         print_logs_with_time("User message is the same as the last message", "+" * 20)
-        return jsonify({ "response": '', "form_id": session.get('form_id', '') })
+        return jsonify({ "response": '', "form_id": session.get('form_id', ''), 'user_message': user_message })
 
     last_message_user[user_id] = user_message
     print_logs_with_time("User message:", user_message)
@@ -129,31 +135,36 @@ def chat_endpoint():
     # get the response from the ai
     try:
         response: str = chat_gemini_generate_content(user_chat_histories[user_id] + temp_list)
-        print_logs_with_time("response from gemini_generate_content:", response[:10], '\t'*2, response[-50:] + '\n')
         if not response:
             raise Exception("Response is empty")
-        model_number = 1
+
+        print_logs_with_time("response from gemini_generate_content:", response[:10], '\t'*2, response[-50:] + '\n')
+
     except Exception as e:
         print_logs_with_time("ERROR while generating content")
         print_logs_with_time("Exception:", e)
         try:
             response: str = chat_gemini_send_message(user_chat_histories[user_id] + temp_list, user_message)
+
+            if response:
+                print_logs_with_time("response from gemini_send_message (After an error in generate content):", response[:10], '\t'*2, response[-50:] + '\n')
             model_number = 2
         except Exception as e:
             print_logs_with_time("ERROR while sending message")
             print_logs_with_time("Exception:", e)
             print_logs_with_time(("+++++*"*10 + "\n")*4)
+            return jsonify({ "response": '', "form_id": session.get('form_id', ''), 'error': 'The qouta has been reached, Please try again in a minute' }), 400
             response = "Sorry, I am unable to generate a response at the moment. Please try again later."
 
     hopeless = False
-    max_tries = 10
+    max_tries = 20
     tries = 0
     if not response:
         response = '\n'
     while response and not response.strip():
         tries += 1
-        print_logs_with_time("=" * 50, end=' ')
-        print_logs_with_time("response is empty", end=' ')
+        print_logs_with_time("=" * 50)
+        print_logs_with_time("response is empty")
         print_logs_with_time("=" * 50)
         if model_number == 1:
             try:
@@ -162,13 +173,12 @@ def chat_endpoint():
                 print_logs_with_time("ERROR while generating content after response is empty")
                 print_logs_with_time("Exception:", e)
 
-                if hopeless:
-                    print_logs_with_time(("--------1"*10 + "\n")*4)
-                    response = "Sorry, I am unable to generate a response at the moment. Please try again later."
-                    hopeless = False
-                    break
+#                 if hopeless:
+                    # print_logs_with_time(("--------1"*10 + "\n")*4)
+                    # response = "Sorry, I am unable to generate a response at the moment. Please try again later."
+                    # break
+                # hopeless = True
                 model_number = 2
-                hopeless = True
         elif model_number == 2:
             try:
                 response = chat_gemini_send_message(user_chat_histories[user_id] + temp_list, user_message)
@@ -176,18 +186,19 @@ def chat_endpoint():
                 print_logs_with_time("ERROR while sending message after response is empty")
                 print_logs_with_time("Exception:", e)
 
-                if hopeless:
-                    print_logs_with_time(("--------2"*10 + "\n")*4)
-                    response = "Sorry, I am unable to generate a response at the moment. Please try again later."
-                    hopeless = False
-                    break
+                # if hopeless:
+                    # print_logs_with_time(("--------2"*10 + "\n")*4)
+                    # response = "Sorry, I am unable to generate a response at the moment. Please try again later."
+                    # break
+                # hopeless = True
                 model_number = 1
-                hopeless = True
         if tries >= max_tries:
             print_logs_with_time("+" * 50, "Max tries reached", "+" * 50)
             print_logs_with_time(("--------3"*10 + "\n")*4)
-            response = "Sorry, I am unable to generate a response at the moment. Please try again later."
-            response += "<br>The qouta for the day has been reached. Please try again tomorrow."
+            return jsonify({ "response": '', "form_id": session.get('form_id', ''), 'error': 'The qouta has been reached, Please try again in a minute' }), 400
+            response = "Sorry, I am unable to generate a response at the moment."
+            response += "<br>The qouta for the day has been reached. Please try again in a few minutes."
+            # return jsonify({ "response": '', "form_id": session.get('form_id', ''), 'error': 'The qouta has been reached, Please try again in a minute' }), 400
             break
 
     random_string = session.get('form_id', '')
@@ -240,8 +251,14 @@ def chat_endpoint():
 
 @app.route('/api/history', methods=['GET'])
 def load_history():
-    # Get the user ID from the cookie
-    user_id = request.cookies.get('user_id')
+    # Get the user id from args:
+    user_id = request.args.get("user_id")
+    print_logs_with_time("user_id from args:", user_id)
+    if not user_id or user_id == 'undefined':
+        print_logs_with_time("User ID not found in args")
+        # Get the user ID from the cookie
+        return jsonify({ "response": '', "form_id": session.get('form_id', ''), 'error': 'User ID not found' }), 400
+        user_id = request.cookies.get('user_id')
 
     # Get pagination parameters (page and limit), defaulting to page=1 and limit=30
     try:
@@ -332,7 +349,7 @@ def list_conversations():
     """
 
     if request.args.get('password') != getenv('PASSWORD', "123123"):
-        return jsonify({'status': 'Unauthorized'}), 401
+        return jsonify({'error': 'Unauthorized'}), 401
 
     if path.exists(history_dir):
         files = listdir(history_dir)
@@ -352,15 +369,57 @@ def conversation(conversation_id):
     """
 
     if request.args.get('password') != getenv('PASSWORD', "123123"):
-        return jsonify({'status': 'Unauthorized'}), 401
+        return jsonify({'error': 'Unauthorized'}), 401
 
     if conversation_id in user_chat_histories:
         conversation = user_chat_histories[conversation_id].copy()
         conversation.reverse()
         return jsonify(conversation)
 
-    return jsonify({'status': 'Conversation ID not found'}), 404
+    return jsonify({'error': 'Conversation ID not found'}), 404
 
+
+@app.route("/api/test/<value>", methods=["GET"], strict_slashes=False)
+def test(value: str = "error"):
+    """
+    Test endpoint that returns a succuss message if the value is "ok"
+    otherwise returns an error message
+    """
+    if value.lower() == "ok":
+        return jsonify({"status": "success"})
+    else:
+        return jsonify({"status": "error", "error": "Invalid value"}), 400
+
+
+@app.errorhandler(404)
+def not_found(e):
+    """
+    404 error handler
+    """
+    return jsonify({"error": "Not found"}), 404
+
+@app.errorhandler(500)
+def internal_error(e):
+    """
+    500 error handler
+    """
+    return jsonify({"error": "Internal server error"}), 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """
+    Handle exceptions
+    """
+    print_logs_with_time("ERROR while handling exception")
+    print_logs_with_time("Exception:", e)
+    return jsonify({"error": str(e)}), 500
+
+@app.errorhandler(400)
+def bad_request(e):
+    """
+    400 error handler
+    """
+    return jsonify({"error": "Bad request"}), 400
 
 if __name__ == '__main__':
 

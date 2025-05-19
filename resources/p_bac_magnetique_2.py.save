@@ -1,0 +1,313 @@
+p_champ_magnetique_1_bac_ph_11 = """
+# Document: Le Champ Magnétique (Cours N° 11)
+
+## Introduction
+
+L'observation de la migration collective des oiseaux suggère l'influence du champ magnétique terrestre.
+- Qu'est-ce qu'un champ magnétique ?
+- Quelles sont ses caractéristiques et comment mesure-t-on son intensité ?
+
+**(Image Description: Silhouette of birds flying in formation against a sky background.)**
+
+## I. Les Aimants
+
+### 1. Définition des aimants
+
+*   Un **aimant** est tout corps capable d'attirer certains métaux (métaux ferreux comme Fer, Cobalt, Nickel,...).
+*   Il existe des aimants naturels (comme la magnétite), mais on les fabrique aussi artificiellement.
+*   On distingue les aimants **droits ou barreaux** et les aimants en **forme de U**.
+
+**(Diagram Description: Diagram of a U-shaped magnet with North (N) and South (S) poles marked.)**
+
+*   Chaque aimant possède un **pôle Nord (N)** et un **pôle Sud (S)**.
+*   Les pôles d'un aimant ne peuvent pas être séparés (si on casse un aimant, on obtient deux aimants plus petits, chacun avec un pôle N et un pôle S).
+*   Lorsqu'on approche deux pôles similaires (N-N ou S-S), ils **se repoussent**.
+*   Lorsqu'on approche deux pôles différents (N-S), ils **s'attirent**.
+
+**(Diagram Description: Two diagrams illustrating repulsion between similar poles (S-N facing N-S) and attraction between different poles (S-N facing S-N).)**
+
+### 2. L'aiguille aimantée
+
+*   La **boussole** est une aiguille aimantée mobile pivotant autour d'un axe vertical.
+*   L'aiguille aimantée possède un pôle nord (N) et un pôle sud (S).
+
+**(Diagram Description: Diagram showing a magnetic needle pivoting, with labels 'pôle Nord' and 'pôle Sud'. Adjacent is a drawing of a compass.)**
+
+## II. Mise en évidence du champ magnétique
+
+### a. Activités pratiques
+
+#### Activité 1: Orientation spontanée
+
+On place plusieurs aiguilles aimantées sur une table horizontale, éloignées les unes des autres et de tout aimant.
+
+*   **Observation:** On remarque que toutes les aiguilles aimantées s'orientent spontanément dans la même direction (approximativement Sud-Nord géographique).
+*   Si on décale une aiguille de sa position d'équilibre et qu'on attend, elle revient à sa position initiale.
+*   **Conclusion:** Les aiguilles aimantées sont soumises à un champ magnétique appelé **champ magnétique terrestre**, dont la source est la Terre elle-même.
+
+**(Diagram Description: Multiple small compass needles scattered, all pointing roughly in the same direction.)**
+
+**Remarque:** Par convention, on appelle pôle nord de l'aiguille aimantée son pôle qui se dirige spontanément vers le nord géographique, et pôle sud celui qui se dirige spontanément vers le sud géographique.
+
+#### Activité 2: Interaction avec un aimant
+
+On approche un aimant droit d'une aiguille aimantée.
+
+**(Diagram Description: Diagram showing a bar magnet (S-N) near a compass needle, causing the needle to deviate.)**
+
+*   **Observation:** L'aiguille aimantée dévie de sa position initiale.
+*   **Conclusion:** L'aimant crée un **champ magnétique** dans l'espace environnant.
+
+#### Activité 3: Interaction avec un courant électrique
+
+On approche un fil conducteur parcouru par un courant électrique (I ≠ 0) d'une aiguille aimantée.
+
+**(Diagram Description: Diagram showing a wire carrying current (I ≠ 0) near a compass needle, causing the needle to deviate.)**
+
+*   **Observation:** L'aiguille aimantée dévie.
+*   **Conclusion:** Le courant électrique crée un **champ magnétique** dans l'espace environnant.
+
+### b. Conclusion sur les sources de champ magnétique
+
+Le champ magnétique peut être créé par:
+
+*   La Terre (champ magnétique terrestre).
+*   Un aimant permanent.
+*   Un courant électrique.
+
+## III. Le champ magnétique créé par un aimant
+
+#### 1. Caractéristiques du vecteur champ magnétique (Vecteur B)
+
+Lorsqu'on place une aiguille aimantée à côté d'un aimant, elle prend une direction et un sens définis qui varient d'un point à l'autre. Pour caractériser le champ magnétique en un point M, on lui associe un vecteur, le **vecteur champ magnétique (Vecteur B)**, avec les caractéristiques suivantes :
+
+*   **Origine:** Centre de l'aiguille aimenté (le point M où on a placé l'aiguille).
+*   **Direction:** Celle de l'aiguille aimantée stabilisée, placée au point M.
+*   **Sens:** Du pôle Sud vers le pôle Nord de l'aiguille aimantée. (vecteur SN)
+*   **Intensité:** Notée B, elle se mesure avec un appareil appelé **Teslamètre** et s'exprime en **Tesla (T)**.
+(image 1 d'un Teslamètre) [https://cdn02.plentymarkets.com/jd5w7us67fek/item/images/2108/full/13610-93-1647428313.png]
+(image 2 d'un Teslamètre) [https://efcmd.ma/wp-content/uploads/2019/11/img_292088.jpg]
+
+**(Diagram Description: Diagram showing a magnetic needle at point M near a magnet, indicating the direction and sense of the magnetic field vector B. A Teslameter is also shown.)**
+
+#### 2. Les Lignes de champ magnétique
+
+*   Une **ligne de champ** est une courbe tangente en chacun de ses points au vecteur champ magnétique (Vecteur B).
+*   La ligne de champ est orientée dans le sens du champ magnétique (Vecteur B).
+*   L'ensemble des lignes de champ constitue le **spectre magnétique**.
+*   La limaille de fer permet de visualiser le spectre du champ créé par un aimant, car les grains de la limaille se comportent comme de minuscules aiguilles aimantées qui s'orientent sous l'action du champ magnétique.
+
+**(Diagram Description: Two diagrams showing the magnetic field lines (spectrum) obtained with iron filings around a bar magnet and a U-shaped magnet. Arrows indicate the direction of the field lines, emerging from North and entering South.)**
+
+**(Diagram Description: Representation of magnetic field vectors B at different points (A, C, D, E, G) around a bar magnet, tangent to the field lines.)**
+
+### 3. Superposition de deux champs magnétiques
+
+On pose deux aimants (1) et (2) comme l'indique la figure ci-contre.
+Soit (Vecteur B₁) le vecteur champ magnétique créé par l'aimant (1) au point M et (Vecteur B₂) celui créé par l'aimant (2) en même point M.
+
+**(Diagram Description: Diagram showing two bar magnets (1) and (2) near a point M. Vectors B1 and B2 representing the fields from each magnet at M are shown, along with the resultant vector B.)**
+
+Le vecteur champ magnétique résultant (Vecteur B) créé par les deux aimants au point M est la somme vectorielle des champs créés par chaque aimant :
+
+**(Vecteur B) = (Vecteur B₁) + (Vecteur B₂)**
+
+**(Diagram Description: Diagram showing the vector addition B = B1 + B2 at point M.)**
+
+**Application:**
+
+Deux aimants droits sont placés perpendiculairement l'un à l'autre à la même distance du point M, comme l'indique la figure ci-contre.
+
+**(Diagram Description: Diagram showing two perpendicular bar magnets (1) and (2) and point M.)**
+
+1.  Sachant que B₁ = 4 mT et B₂ = 3 mT, représenter à l'échelle : 2mT ↔ 1 cm.
+    a. (Vecteur B₁): Le vecteur champ magnétique créé par l'aimant A₁ au point M.
+    b. (Vecteur B₂): Le vecteur champ magnétique créé par l'aimant A₂ au point M.
+2.  a. Exprimer le vecteur champ magnétique résultant (Vecteur B) en fonction de (Vecteur B₁) et (Vecteur B₂), représenter (Vecteur B).
+    b. Schématiser l'aiguille aimantée placée au point M.
+    c. Déterminer graphiquement et par calcul la valeur du champ magnétique B résultant.
+    d. Déterminer la valeur de l'angle α = ((Vecteur B₁), (Vecteur B)).
+
+## IV. Le champ magnétique terrestre
+
+La Terre crée un champ magnétique appelé le **champ magnétique terrestre**. Ce champ est un peu près identique au champ magnétique créé par un **aimant droit** placé au centre de la Terre où son pôle **Sud** correspond au pôle **Nord géographique** et son pôle **Nord** correspond au pôle **Sud géographique**. L'axe de cet aimant n'est pas confondu avec l'axe de rotation de la Terre.
+
+**(Diagram Description: Diagram of the Earth showing its geographic poles (Nord, Sud) and magnetic poles (Nord, Sud, slightly offset). Magnetic field lines are shown emerging from the magnetic South (near geographic North) and entering the magnetic North (near geographic South). A compass needle at point M shows the direction of the magnetic field B_T, its horizontal component B_H, and vertical component B_V.)**
+
+*   **Déclinaison (D):** On appelle l'angle de déclinaison (D) l'angle entre le plan de la ligne méridienne magnétique et le plan de la ligne méridienne géographique.
+*   **Inclinaison (I):** On appelle l'angle d'inclinaison (I) l'angle compris entre la composante horizontale B_H et le vecteur champ magnétique terrestre (Vecteur B_T).
+
+Le vecteur du champ magnétique terrestre (Vecteur B_T) a deux composantes :
+
+*   **Composante horizontale (Vecteur B_H):** Sa direction et son sens sont déterminés par une aiguille de boussole.
+*   **Composante verticale (Vecteur B_V):** Dirigée vers le centre de la Terre (approximativement). Son sens est centripète dans l'hémisphère nord et centrifuge dans l'hémisphère sud.
+
+**(Diagram Description: Diagram showing the vector addition of horizontal (BH) and vertical (BV) components to form the total terrestrial magnetic field (BT).)**
+
+B = √(B_H² + B_T²)
+cos(angle I) = B_H / B_T
+
+---
+"""
+
+p_champ_magnetique_2_bac_ph_11 = """
+# PH 11:
+## Cours N° 11 : Le champ magnétique
+
+### Introduction :
+Les savants pensent que la migration collective des oiseaux se fait grâce au champ magnétique terrestre.
+- Qu'est-ce qu'un champ magnétique ?
+- Quelles sont ses caractéristiques et comment mesure son intensité ?
+
+**Description de l'image :** L'image montre une volée d'oiseaux noirs volant dans un ciel clair, illustrant le phénomène de migration possiblement guidé par le champ magnétique terrestre.
+
+### 1. Les aimants :
+
+#### 1. Définition des aimants :
+L'aimant est tout corps capable d'attirer certains métaux (appelés méteaux ferreux, comme: Fer, Cobalt, Nickel,...). Il existe naturellement dans la nature (comme la magnétite), mais on le fabrique aussi artificiellement.
+On distingue les aimants **permanents** et les aimants **temporaires (électroaimants)**, et les aimants en forme **variée (droit, en U, aiguille, etc.)**.
+Chaque aimant possède **deux pôles : un pôle nord (N) et un pôle sud (S)** et ils ne peuvent pas être séparés.
+- Lorsqu'on approche deux pôles similaires (N et N, ou S et S), ils **se repoussent**.
+- Lorsqu'on approche deux pôles différents (N et S), ils **s'attirent**.
+
+**Description des figures :**
+*   **Aimant en U :** Un aimant en forme de "U" est représenté, avec ses pôles Nord (N) et Sud (S) indiqués aux extrémités. Des lignes de champ magnétique sont schématisées sortant du pôle Nord et entrant au pôle Sud.
+*   **Interaction entre aimants droits :**
+    *   **Répulsion :** Deux aimants droits sont placés côte à côte. Le pôle Sud (S) du premier aimant fait face au pôle Sud (S) du second. Une flèche indique une force de répulsion entre eux. Le pôle Nord (N) du premier fait face au pôle Nord (N) du second, montrant également une répulsion.
+    *   **Attraction :** Deux aimants droits sont placés côte à côte. Le pôle Sud (S) du premier aimant fait face au pôle Nord (N) du second. Une flèche indique une force d'attraction entre eux. Inversement, le pôle Nord (N) du premier face au pôle Sud (S) du second montre aussi une attraction.
+
+#### 2. L'aiguille aimantée :
+La boussole est un **une aiguille aimantée** mobile pivotant autour d'un axe vertical.
+L'aiguille aimantée possède un pôle nord N et un pôle sud S.
+
+**Description des figures :**
+*   **Aiguille aimantée simple :** Une aiguille aimantée est montrée pivotant sur un support. Son pôle Nord (N) est généralement coloré (souvent en rouge) et pointe vers le Nord géographique, tandis que son pôle Sud (S) pointe vers le Sud géographique. Les labels "pôle Nord" et "pôle Sud" sont indiqués.
+*   **Boussole :** Une boussole est représentée avec son cadran gradué et une aiguille aimantée au centre. L'aiguille s'oriente selon les lignes du champ magnétique terrestre, indiquant la direction Nord-Sud magnétique.
+
+### 2. Mis en évidence du champ magnétique :
+
+#### a. Activités :
+
+##### Activité 1:
+On place plusieurs aiguilles aimantées sur une table horizontale éloignée les unes des autres.
+
+**Description de la figure :** Plusieurs petites aiguilles aimantées (boussoles simplifiées) sont dispersées sur une surface. Elles s'orientent toutes dans la même direction, indiquant l'influence d'un champ magnétique uniforme (le champ terrestre).
+
+a.  Qu'observez-vous sur l'orientation des aiguilles aimantées ?
+    On remarque que toutes les aiguilles aimantées prennent la même **direction** (sud-nord).
+b.  On décale les aiguilles aimantées de leur position d'équilibre et attendent ensuite qu'elles soient à nouveau équilibrées. Qu'observez-vous ?
+    On remarque que toutes les aiguilles aimantées **reviennent** à leur première position d'équilibre.
+c.  Les aiguilles aimantées sont-elles soumises à un champ magnétique ? Quel est son nom ? Quelle est sa source ?
+    Les aiguilles aimantées sont soumises à **un champ magnétique** appelé **champ magnétique terrestre**. Sa source est **la Terre elle-même**.
+
+**Remarque :** Par convention, on appelle pôle nord de l'aiguille aimantée son pôle qui se dirige spontanément vers le nord géographique (en réalité, le pôle Nord géographique est proche du pôle Sud magnétique de la Terre) et le pôle sud celui qui se dirige spontanément vers le sud géographique.
+
+##### Activité 2:
+On approche un aimant droit d'une aiguille aimantée.
+
+**Description de la figure :** Un aimant droit (barreau) avec ses pôles N et S est approché d'une aiguille aimantée pivotante. L'aiguille dévie de sa direction initiale pour s'orienter par rapport à l'aimant.
+
+a.  Qu'observez-vous ?
+    L'aiguille aimantée **dévie / change d'orientation**.
+b.  Que peut-on déduire ?
+    L'aimant crée **un champ magnétique** dans l'espace environnant.
+
+##### Activité 3 :
+On approche un fil conducteur parcouru par un courant électrique (I ≠ 0) d'une aiguille aimantée.
+
+**Description de la figure :** Un fil conducteur rectiligne, traversé par un courant électrique (I ≠ 0), est placé près d'une aiguille aimantée. L'aiguille, initialement alignée Nord-Sud, dévie, montrant l'influence magnétique du courant.
+
+a.  Qu'observez-vous ?
+    L'aiguille aimantée **dévie / change d'orientation**.
+b.  Que peut-on déduire ?
+    Le courant électrique crée **un champ magnétique** dans l'espace environnant.
+
+== Fin de la page 1 ==
+
+#### b. Conclusion :
+Le champ magnétique se crée par trois sources principales :
+- Le champ magnétique créé par **les aimants permanents**.
+- Le champ magnétique créé par **les courants électriques**.
+- Le champ magnétique créé par **la Terre** (le champ magnétique **terrestre**).
+
+**Description de l'image :** Portrait de Nikola Tesla, pionnier dans le domaine de l'électricité et du magnétisme. À côté, un appareil de mesure (possiblement un teslamètre/gaussmètre) avec une sonde, utilisé pour mesurer l'intensité du champ magnétique. En dessous, une aiguille aimantée sur un pivot, déviée par un champ magnétique externe, illustrant la détection du champ. Les pôles N et S sont indiqués, ainsi qu'un point M où le champ est mesuré.
+
+### 3. Le champ magnétique créé par un aimant :
+
+#### 1. Les caractéristiques du vecteur champ magnétique :
+Lorsqu'on place une aiguille aimantée à côté d'un aimant, elle prend une direction et un sens définis qui varient d'un point à l'autre. Pour distinguer le champ magnétique en un point M, on lui associe un **vecteur champ magnétique, noté B_M**, avec les caractéristiques suivantes :
+- **Origine :** Centre de l'aiguille aimantée (le point M où on a placé l'aiguille).
+- **Direction :** La même direction que celle prise par l'aiguille aimantée placée au point M.
+- **Sens :** Du pôle **Sud** vers le pôle **Nord** de l'aiguille aimantée.
+- **Intensité :** L'intensité B (ou norme ||B_M||) du champ magnétique se mesure par un appareil qu'on appelle **teslamètre**. Elle s'exprime en **Tesla**, symbolisée par (T).
+
+#### 2. Les Lignes de champ magnétique :
+- On appelle ligne de champ une **courbe tangente en chacun de ses points** au vecteur champ magnétique **B**.
+- La ligne de champ est orientée dans le sens du champ magnétique.
+- L'ensemble des lignes de champ constitue **le spectre magnétique** du champ magnétique.
+
+**Description de l'image (ligne de champ):** Une ligne courbe représente une ligne de champ magnétique. En un point M sur cette ligne, le vecteur champ magnétique **B** est dessiné, tangent à la courbe et orienté dans le sens de la flèche de la ligne de champ.
+
+**Visualisation du spectre :** La visualisation du spectre permet de voir la forme du champ créé par un aimant. Les grains de limaille de fer se comportent comme de minuscules aiguilles aimantées qui s'orientent sous l'action du champ magnétique, dessinant ainsi les lignes de champ.
+
+**Description des figures (Spectres et représentations):**
+
+*   **Aimant droit :**
+    *   **Figure obtenue (Limaille) :** De la limaille de fer est dispersée autour d'un aimant droit. Elle s'aligne selon des courbes qui sortent d'un pôle et rentrent dans l'autre, formant des boucles. La densité de limaille est plus forte près des pôles.
+    *   **Représentation (Lignes de champ) :** Un schéma montre un aimant droit avec ses pôles S et N. Des lignes de champ sont dessinées sortant du pôle Nord (N) et entrant dans le pôle Sud (S), formant des boucles fermées. Plusieurs vecteurs champ magnétique **B(A)**, **B(C)**, **B(D)**, **B(E)**, **B(G)** sont représentés en différents points (A, C, D, E, G) autour de l'aimant, tangents aux lignes de champ et orientés de N vers S à l'extérieur.
+
+*   **Aimant en forme U :**
+    *   **Figure obtenue (Limaille) :** De la limaille de fer est dispersée autour d'un aimant en U. Elle montre des lignes de champ allant d'un pôle à l'autre, particulièrement concentrées et quasi parallèles entre les branches du U.
+    *   **Représentation (Lignes de champ) :** Un schéma montre un aimant en U avec ses pôles S et N. Des lignes de champ sont dessinées sortant du pôle Nord (N) et entrant dans le pôle Sud (S). Entre les pôles, les lignes sont quasi parallèles et équidistantes (champ uniforme). À l'extérieur, elles forment des boucles. Des vecteurs champ magnétique **B(A)**, **B(C)**, **B(D)**, **B(E)**, **B(G)** sont représentés en différents points, tangents aux lignes.
+
+#### 3. Superposition de deux champs magnétiques :
+On pose deux aimants (1) et (2) comme l'indique la figure ci-contre.
+Soit **B1** le vecteur champ magnétique créé par l'aimant (1) au point M et **B2** celui créé par l'aimant (2) en même point M.
+Le vecteur champ magnétique résultant **B** créé par les deux aimants (1) et (2) au point M est :
+**vecteur B = vecteur B1 + vecteur B2** 
+
+**Description de la figure :**
+Deux aimants droits sont positionnés près d'un point M. L'aimant (1) a ses pôles S et N orientés horizontalement. L'aimant (2) a ses pôles N et S orientés verticalement. Au point M, le vecteur **B1** (créé par l'aimant 1) et le vecteur **B2** (créé par l'aimant 2) sont dessinés. Le vecteur résultant **B** est obtenu par la règle du parallélogramme (somme vectorielle de **B1** et **B2**).
+
+== Fin de la page 2 ==
+
+### Application :
+Deux aimants droits (1) et (2) sont placés perpendiculairement l'un à l'autre à la même distance du point M, comme l'indique la figure ci-contre.
+
+**Description de la figure :** Un aimant droit horizontal (1) avec pôle N à droite et S à gauche. Un aimant droit vertical (2) avec pôle N en haut et S en bas. Le point M est situé à l'intersection des axes médians des aimants.
+
+1.  Sachant que B₁ = 4 mT et B₂ = 3 mT, représenter à l'échelle : 2 mT ↔ 1 cm.
+    a.  **vecteur B₁** Le vecteur champ magnétique créé par l'aimant A1 (aimant (1)) au point M.
+    b.  **vecteur B₂** Le vecteur champ magnétique créé par l'aimant A2 (aimant (2)) au point M.
+2.  a.  Exprimer le vecteur champ magnétique résultant **vecteur B** en fonction de **vecteur B₁** et **vecteur B₂**, représenter **vecteur B**.
+    b.  Schématiser l'aiguille aimantée placée au point M.
+    c.  Déterminer graphiquement et par calcul la valeur du champ magnétique B résultant.
+    d.  Déterminer la valeur de l'angle α = (**vecteur B₁**, **vecteur B**).
+
+### 4. Le champ magnétique terrestre :
+La Terre crée un champ magnétique appelé le champ magnétique terrestre. Ce champ magnétique terrestre est un peu près identique au champ magnétique créé par **un aimant droit géant (hypothétique)** placé au centre de la terre où son pôle **Sud magnétique** correspond au pôle **Nord géographique** terrestre et son pôle **Nord magnétique** correspond au pôle **Sud géographique** terrestre. L'axe de cet aimant est **incliné par rapport à** l'axe de rotation de la Terre.
+
+**Description de la figure (Globe terrestre) :**
+La Terre est représentée avec son axe de rotation (passant par les pôles Nord et Sud géographiques). Le pôle Nord magnétique est situé près du pôle Sud géographique, et le pôle Sud magnétique près du pôle Nord géographique. Des lignes de champ magnétique terrestre sont dessinées, sortant du pôle Nord magnétique (près du Sud géo.) et entrant au pôle Sud magnétique (près du Nord géo.), formant des boucles similaires à celles d'un aimant droit. Le plan de la ligne méridienne géographique (contenant l'axe de rotation) et le plan de la ligne méridienne magnétique (contenant la direction de l'aiguille aimantée) sont indiqués. L'angle entre ces deux plans au niveau d'un lieu est la déclinaison magnétique (D).
+
+On appelle l'angle **de déclinaison (D)** l'angle entre le plan de la ligne méridienne **géographique** et le plan de la ligne méridienne **magnétique**.
+
+Le vecteur du champ magnétique terrestre **vecteur BT** a deux composantes :
+- **Composante horizontale (vecteur B_H)** : sa direction et son sens sont déterminés par une aiguille de boussole horizontale ; sa valeur est **B_H = 5.10^(-2) T**.
+- **Composante verticale (vecteur B_V)** : dirigée vers le centre de la terre (approximativement), son sens est centripète dans la moitié nord de la terre et centrifuge dans la moitié sud de la terre.
+
+**Description de la figure (Composantes Bh, Bv):**
+En un point M, le vecteur champ magnétique terrestre total **vecteur BT** est représenté. Il est décomposé en une composante horizontale **vecteur BH** (dans le plan horizontal π) et une composante verticale **BV**. L'angle **I** (lettre grecque iota ou I majuscule) entre **BT** et le plan horizontal **BH** est l'angle d'inclinaison. La déclinaison D est l'angle entre le Nord géographique et la direction de **BH**. Les plans méridiens géographique et magnétique sont aussi indiqués.
+
+On appelle l'angle **angle I** l'angle compris entre la composante horizontale **B_H** et le vecteur **B**,
+L'angle **D** est la déclinaison.
+Donc on a :
+**vecteur B_T = vecteur B_H + vecteur B__V
+**cos(angle I) = B_H / B_T**
+**sin(angle I) = B_V / B_T**
+**B_T = √(B_H² + B_V²)**
+
+**Description de la figure (Vecteurs Bv, Bh, B):** Un diagramme vectoriel montre le vecteur horizontal **BH**, le vecteur vertical **BV** et le vecteur résultant **B** (ici noté B, représentant BT). L'angle d'inclinaison I est visible entre **BH** et **B**.
+
+== Fin de la page 3 ==
+"""
