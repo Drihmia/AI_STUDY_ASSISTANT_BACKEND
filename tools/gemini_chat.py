@@ -6,6 +6,7 @@ from tools.utils import (get_current_time,
                          print_logs_with_time,
                          )
 import datetime
+import sys
 
 # System prompt for the Gemini model
 system_prompt = {
