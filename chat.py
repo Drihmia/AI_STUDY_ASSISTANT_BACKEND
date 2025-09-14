@@ -428,5 +428,5 @@ if __name__ == '__main__':
     # Register the signal handler for SIGINT (Ctrl+D)
     # signal.signal(signal.SIGTERM, handle_signal)
     AI_DEBUG = getenv('AI_DEBUG', False)
-    app.run(port=5001, debug=AI_DEBUG)
+    app.run(debug=AI_DEBUG, host='0.0.0.0', port=5000)
 
