@@ -115,7 +115,7 @@ def chat_endpoint():
         language = answers.get('language', 'en')
         print_logs_with_time("answers:", answers)
         formatted_answers = [k + ': ' + v for k, v in answers.items() if k != 'language']
-        user_message = f"{structured_message_based_on_user_language.get(language)}:<br>&emsp;➔ {"<br>&emsp;➔ ".join(formatted_answers)}<br>"
+        user_message = f"{structured_message_based_on_user_language.get(language)}:<br>&emsp;➔ {'<br>&emsp;➔ '.join(formatted_answers)}<br>"
     session['answers'] = None
 
     if not user_message:
