@@ -73,6 +73,12 @@ def before_request():
     print_logs_with_time("session from before_request:", session)
 
 
+# Add root endpoint handler
+@app.route('/')
+def root():
+    return jsonify({"status": "ok"})
+
+
 @app.route('/api/chat', methods=['POST'])
 def chat_endpoint():
     """
