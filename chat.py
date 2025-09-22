@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, make_response, session
@@ -23,7 +24,7 @@ from tools.gemini_chat import (
     chat_gemini_generate_content,
     chat_gemini_send_message,
 )
-from chat_gimini import chat_endpoint as chat_endpoint_gemini
+from database import Database
 
 load_dotenv()
 
@@ -53,6 +54,9 @@ app.config.update(
     SESSION_COOKIE_SECURE=True,
 )
 CORS(app)
+
+# Initialize the database
+db = Database(os.environ.get("MONGO_URI"))
 
 # Path to the directory where chat histories are saved
 history_dir = 'chat_histories/'
@@ -85,7 +89,6 @@ def chat_endpoint():
     """
     Chat endpoint
     """
-    return chat_endpoint_gemini()
 
     # Get the user id from args:
     user_id = request.args.get('user_id')
@@ -105,7 +108,7 @@ def chat_endpoint():
 
     # ensure there's a history for the user by loading their specific history file
     if user_id not in user_chat_histories.keys():
-        user_chat_histories[user_id] = []
+        user_chat_histories[user_id] = db.get_history(user_id)
 
     user_message = ""
     if request.is_json:
@@ -234,8 +237,8 @@ def chat_endpoint():
     # append the model's response to the chat history
     temp_list.append({"role": "model", "parts": append_current_time('model', response)})
     user_chat_histories[user_id].extend(temp_list)
-    # save_chat_history(user_chat_histories[user_id], user_id, history_dir)
     Thread(target=save_chat_history, args=(user_chat_histories[user_id], user_id, history_dir), daemon=True).start()
+    Thread(target=db.add_messages, args=(user_id, temp_list), daemon=True).start()
 
 
 
@@ -437,4 +440,3 @@ if __name__ == '__main__':
     # signal.signal(signal.SIGTERM, handle_signal)
     AI_DEBUG = getenv('AI_DEBUG', False)
     app.run(debug=AI_DEBUG, host='0.0.0.0', port=5000)
-

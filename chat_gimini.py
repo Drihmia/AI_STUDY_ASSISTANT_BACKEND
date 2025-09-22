@@ -6,43 +6,11 @@ from os import getenv
 from flask_compress import Compress
 import requests
 from flask_cors import CORS
-from database import Database
 
 load_dotenv()
 
-app = Flask(__name__)
-
-# Initialize the Compress extension
-Compress(app)
-
-# Set the Compress configuration
-app.config['COMPRESS_MIN_SIZE'] = 500
-app.config['COMPRESS_LEVEL'] = 9
-app.config['COMPRESS_ALGORITHM'] = 'gzip'  # Force gzip
-app.config['COMPRESS_MIMETYPES'] = [ 'application/json' ]
-
-# Set the secret key for the session
-app.secret_key = getenv('SECRET_KEY')
-
-# Set the session lifetime to 365 days
-app.permanent_session_lifetime = timedelta(days=365)
-
-# Set the session cookie settings
-app.config.update(
-    SESSION_COOKIE_DOMAIN='.drihmia.me',
-    SESSION_COOKIE_NAME='session',
-    SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Lax',
-    SESSION_COOKIE_SECURE=True,
-)
-
-CORS(app)
-
 # Load Gemini API key from environment variables
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-
-# Initialize the database
-db = Database(os.environ.get("MONGO_URI"))
 
 # Define the endpoint for Gemini's chat completion API
 GEMINI_CHAT_API_URL = "https://api.gemini-ai.com/v1/chat/completions"
@@ -78,38 +46,3 @@ def chat(system_messages):
     response.raise_for_status()  # Raise an error for bad responses
 
     return response.json()["choices"][0]["message"]["content"]
-
-@app.route('/chat', methods=['POST'])
-def chat_endpoint():
-    user_message = request.json.get('message')
-    user_id = request.args.get("user_id")
-    if not user_message:
-        return jsonify({"error": "Message field is required."}), 400
-    if not user_id:
-        return jsonify({"error": "user_id field is required."}), 400
-
-    # Get chat history from the database
-    chat_history = db.get_history(user_id)
-    if not chat_history:
-        chat_history = [system_prompt]
-
-    # Append user message to chat history
-    chat_history.append({"role": "user", "content": user_message})
-
-    try:
-        # Get the assistant's response
-        response_content = chat(chat_history)
-        
-        # Append assistant's response to the local chat history
-        chat_history.append({"role": "assistant", "content": response_content})
-
-        # Save the last two messages (user and assistant) to the database
-        db.add_messages(user_id, chat_history[-2:])
-
-        return jsonify({"response": response_content})
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to send chat request to Gemini: {e}")
-        return jsonify({"error": "Failed to process the request.", "details": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
