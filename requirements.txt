@@ -29,3 +29,4 @@ google-generativeai>=0.7.2
 flask_compress
 flask_cors
 bs4
+pymongo

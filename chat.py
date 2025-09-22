@@ -79,7 +79,7 @@ def root():
     return jsonify({"status": "ok"})
 
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/chat', methods=['POST'])
 def chat_endpoint():
     """
     Chat endpoint

@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import requests
+from database import Database
 
 load_dotenv()
 
@@ -9,7 +10,9 @@ app = Flask(__name__)
 
 # Load Gemini API key from environment variables
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-print(GEMINI_API_KEY)
+
+# Initialize the database
+db = Database(os.environ.get("MONGO_URI"))
 
 # Define the endpoint for Gemini's chat completion API
 GEMINI_CHAT_API_URL = "https://api.gemini-ai.com/v1/chat/completions"
@@ -28,9 +31,6 @@ system_prompt = {
     Then, ask which subject the student wants to know more about (physics or chemistry), and specify the course or lesson. Be stricter in case of scientific errors and put more effort into responding to scientific questions. When asking the student's age, also ask if they want a spell check of their French or if they want to learn in English as an exception. Never ask more than one question per prompt. Respond to the student formatted in HTML."""
 }
 
-# Initialize chat history
-chat_history = [system_prompt]
-
 def chat(system_messages):
     """Send a chat request to the Gemini API and return the assistant's response."""
     headers = {
@@ -45,29 +45,41 @@ def chat(system_messages):
     }
 
     response = requests.post(GEMINI_CHAT_API_URL, json=payload, headers=headers)
-    print("Response:", response.json())
     response.raise_for_status()  # Raise an error for bad responses
 
     return response.json()["choices"][0]["message"]["content"]
 
-@app.route('/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST'])
 def chat_endpoint():
     user_message = request.json.get('message')
+    user_id = request.args.get("user_id")
     if not user_message:
         return jsonify({"error": "Message field is required."}), 400
+    if not user_id:
+        return jsonify({"error": "user_id field is required."}), 400
+
+    # Get chat history from the database
+    chat_history = db.get_history(user_id)
+    if not chat_history:
+        chat_history = [system_prompt]
 
     # Append user message to chat history
     chat_history.append({"role": "user", "content": user_message})
 
     try:
         # Get the assistant's response
-        response = chat(chat_history)
-        chat_history.append({"role": "assistant", "content": response})
-        return jsonify({"response": response})
+        response_content = chat(chat_history)
+        
+        # Append assistant's response to the local chat history
+        chat_history.append({"role": "assistant", "content": response_content})
+
+        # Save the last two messages (user and assistant) to the database
+        db.add_messages(user_id, chat_history[-2:])
+
+        return jsonify({"response": response_content})
     except requests.exceptions.RequestException as e:
         print(f"Failed to send chat request to Gemini: {e}")
         return jsonify({"error": "Failed to process the request.", "details": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
-
