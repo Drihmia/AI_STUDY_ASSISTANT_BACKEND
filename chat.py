@@ -65,8 +65,18 @@ user_chat_histories = {}
 
 last_message_user = {}
 
-# Load the chat histories on server startup
-load_chat_history_startup(user_chat_histories, history_dir)
+# Get storage type from environment variable, default to 'local'
+STORAGE_TYPE = getenv('STORAGE_TYPE', 'local')
+
+# Load the chat histories on server startup based on storage type
+if STORAGE_TYPE == 'remote':
+    print("Loading chat histories from remote MongoDB...")
+    user_chat_histories = db.get_all_histories()
+    print(f"Number of chat histories loaded from remote: {len(user_chat_histories)}")
+else:
+    print("Loading chat histories from local file system...")
+    load_chat_history_startup(user_chat_histories, history_dir)
+    print(f"Number of chat histories loaded from local: {len(user_chat_histories)}")
 
 
 @app.before_request
@@ -237,9 +247,11 @@ def chat_endpoint():
     # append the model's response to the chat history
     temp_list.append({"role": "model", "parts": append_current_time('model', response)})
     user_chat_histories[user_id].extend(temp_list)
-    Thread(target=save_chat_history, args=(user_chat_histories[user_id], user_id, history_dir), daemon=True).start()
-    Thread(target=db.add_messages, args=(user_id, temp_list), daemon=True).start()
-
+    
+    if STORAGE_TYPE == 'remote':
+        Thread(target=db.add_messages, args=(user_id, temp_list), daemon=True).start()
+    else:
+        Thread(target=save_chat_history, args=(user_chat_histories[user_id], user_id, history_dir), daemon=True).start()
 
 
 
@@ -359,7 +371,7 @@ def list_conversations():
     List all the list_conversations with password
     """
 
-    if request.args.get('password') != getenv('PASSWORD', "123123"):
+    if request.args.get('password') != getenv('PASSWORD_CONVERSATIONS'):
         return jsonify({'error': 'Unauthorized'}), 401
 
     if path.exists(history_dir):
@@ -379,7 +391,7 @@ def conversation(conversation_id):
     Get the conversation based on the conversation ID
     """
 
-    if request.args.get('password') != getenv('PASSWORD', "123123"):
+    if request.args.get('password') != getenv('PASSWORD_CONVERSATIONS'):
         return jsonify({'error': 'Unauthorized'}), 401
 
     if conversation_id in user_chat_histories:

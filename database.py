@@ -15,7 +15,7 @@ class Database:
         Retrieves the chat history for a given user_id.
         """
         history = self.collection.find_one({"_id": user_id})
-        print("History:", history)
+        print("get_history:", history)
         if history:
             return history["messages"]
         return []
@@ -29,3 +29,14 @@ class Database:
             {"$push": {"messages": {"$each": messages}}},
             upsert=True
         )
+
+    def get_all_histories(self):
+        """
+        Retrieves all chat histories from the collection.
+        """
+        histories = self.collection.find()
+        user_chat_histories = {}
+        for history in histories:
+            print("get_all_histories:", history)
+            user_chat_histories[history["_id"]] = history["messages"]
+        return user_chat_histories
