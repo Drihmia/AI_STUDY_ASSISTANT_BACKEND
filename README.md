@@ -1,45 +1,109 @@
-Little project trying to descover the realm of AI and chatbots.
+# AI Study Assistant
 
-## Installation
-```bash
-# Python related packages:
-pip3 install -r requirements.txt
+This is a Python-based AI Study Assistant that uses the Gemini API to provide a seamless and interactive chat experience. The application is built with Flask and can be configured to store chat histories either locally or in a remote MongoDB database.
 
-# Node related packages:
-node Install
-npm install -g forever
-```
+## Features
 
-## Description
-This project is a simple chatbot that uses groq AI to answer questions.
-I have feed it with prompts to respond to students questions about courses related to Physics and Chemistry of Moroccan high school.
+*   **Interactive Chat:** Engage in conversations with an AI-powered assistant.
+*   **Persistent Chat History:** Your conversations are saved, allowing you to continue where you left off.
+*   **Dual Storage Options:** Choose between local file-based storage or a remote MongoDB database for your chat histories.
+*   **Secure API:** Endpoints are protected to ensure that only authorized users can access conversation data.
+*   **Easy Deployment:** The application is designed for straightforward deployment to platforms like Render.
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+*   Python 3.8 or higher
+*   pip (Python package installer)
+*   A Gemini API key
+*   A MongoDB database (if using remote storage)
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/Drihmia/AI_STUDY_ASSISTANT.git
+    cd AI_STUDY_ASSISTANT
+    ```
+
+2.  **Create a virtual environment:**
+
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3.  **Install the required packages:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Set up your environment variables:**
+
+    Create a `.env` file in the root of the project and add the following environment variables. You can use the `.env.example` file as a template.
+
+    ```bash
+    # Gemini API Key
+    GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+
+    # MongoDB Connection URI (only required if STORAGE_TYPE is 'remote')
+    MONGO_URI="YOUR_MONGODB_URI"
+    MONGO_DB_NAME="chat_history"
+    MONGO_COLLECTION_NAME="history"
+
+    # Secret key for Flask session management
+    SECRET_KEY="YOUR_SUPER_SECRET_KEY"
+
+    # Password to protect the /api/list_conversations endpoint
+    PASSWORD_CONVERSATIONS="YOUR_ADMIN_PASSWORD"
+
+    # Storage type: 'local' or 'remote'
+    STORAGE_TYPE="local"
+
+    # Set to True for Flask debug mode
+    AI_DEBUG=False
+    ```
 
 ## Usage
-lanching the chatbot
+
+To run the application locally, use the following command:
+
 ```bash
-python chatbot.py
-OR
-gunicorn -w 3 -b 127.0.0.1:5001 chat:app --error-logfile ai-error.log --access-logfile ai-access.log --capture-output --pid /run/chat.pid --daemon
+python3 chat.py
 ```
 
-lanching the web app
-```bash
-node server.js
-OR
-forever start server.js
-```
+The application will be available at `http://localhost:5000`.
 
-Mode commands
-````bash
-forever list
-forever stop server.js
-forever logs
-```
-Open your browser and go to `http://localhost:3000/`
+## API Endpoints
 
-## Resources
-- [Documentation](https://console.groq.com/docs/examples)
-- [Groq API](https://console.groq.com/docs/api)
-- [Python API](https://console.groq.com/docs/python)
-- [Chatbot with Conversational Memory on LangChain](https://replit.com/@GroqCloud/Chatbot-with-Conversational-Memory-on-LangChain#main.py)
-- [Groq Quickstart Conversational Chatbot](https://replit.com/@GroqCloud/Groq-Quickstart-Conversational-Chatbot?v=1#README.md)
+*   `GET /`: Root endpoint to check the status of the application.
+*   `POST /api/chat`: The main chat endpoint to send and receive messages.
+*   `GET /api/history`: Retrieve the chat history for a specific user.
+*   `POST /api/answers`: Submit answers to a form presented by the AI.
+*   `GET /api/list_conversations`: List all conversations (requires a password).
+*   `GET /api/list_conversations/<conversation_id>`: Retrieve a specific conversation by its ID (requires a password).
+
+## Deployment
+
+This application is ready to be deployed on Render. Here are the steps to deploy it:
+
+1.  **Create a new Web Service on Render.**
+2.  **Connect your GitHub repository.**
+3.  **Configure the build and start commands:**
+    *   **Build Command:** `pip install -r requirements.txt`
+    *   **Start Command:** `python3 chat.py`
+4.  **Add your environment variables** in the Render dashboard.
+5.  **Deploy the application.**
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a pull request or open an issue if you have any suggestions or find any bugs.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.

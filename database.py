@@ -1,5 +1,6 @@
 import os
 from pymongo import MongoClient
+from bson import BSON
 
 class Database:
     def __init__(self, uri):
@@ -40,3 +41,46 @@ class Database:
             print("get_all_histories:", history)
             user_chat_histories[history["_id"]] = history["messages"]
         return user_chat_histories
+
+    def get_conversations_list(self):
+        """
+        Retrieves a list of all conversations with metadata.
+        """
+        pipeline = [
+            {
+                "$project": {
+                    "_id": 1,
+                    "last_message_time": {
+                        "$let": {
+                            "vars": {
+                                "last_message": {"$arrayElemAt": ["$messages", -1]}
+                            },
+                            "in": "$$last_message.parts"
+                        }
+                    },
+                    "size_kb": {"$divide": ["$bsonSize", 1024]}
+                }
+            }
+        ]
+        conversations = list(self.collection.aggregate(pipeline))
+        
+        # Extract the time from the <time> tag in last_message_time
+        for conv in conversations:
+            time_tag_str = conv.get('last_message_time', '')
+            # Basic parsing, can be improved with regex for robustness
+            if '<time>' in time_tag_str:
+                start = time_tag_str.find('<time>') + len('<time>')
+                end = time_tag_str.find('</time>')
+                if end == -1: # Handle self-closing tags if any
+                    end = time_tag_str.find('/>')
+                if start != -1 and end != -1:
+                     conv['last_message_time'] = time_tag_str[start:end].strip()
+                else:
+                    conv['last_message_time'] = '' # Set as empty if not found
+
+            conv['size_kb'] = f"{conv['size_kb']:.2f} KB"
+
+
+        # Sort by last message time
+        conversations.sort(key=lambda x: x.get('last_message_time', ''), reverse=True)
+        return [(c['_id'], c['last_message_time'], c['size_kb']) for c in conversations]

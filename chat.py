@@ -374,6 +374,9 @@ def list_conversations():
     if request.args.get('password') != getenv('PASSWORD_CONVERSATIONS'):
         return jsonify({'error': 'Unauthorized'}), 401
 
+    if STORAGE_TYPE == 'remote':
+        return jsonify(db.get_conversations_list())
+
     if path.exists(history_dir):
         files = listdir(history_dir)
         # Create a list of tuples (filename, modification time, size in KB)
