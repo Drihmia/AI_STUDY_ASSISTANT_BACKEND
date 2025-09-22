@@ -12,3 +12,4 @@ node_modules
 groq-*
 *chat_histories
 __pycache__
+venv/

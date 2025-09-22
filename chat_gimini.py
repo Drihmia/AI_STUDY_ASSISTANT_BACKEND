@@ -1,12 +1,42 @@
 import os
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
+from datetime import timedelta
+from os import getenv
+from flask_compress import Compress
 import requests
+from flask_cors import CORS
 from database import Database
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# Initialize the Compress extension
+Compress(app)
+
+# Set the Compress configuration
+app.config['COMPRESS_MIN_SIZE'] = 500
+app.config['COMPRESS_LEVEL'] = 9
+app.config['COMPRESS_ALGORITHM'] = 'gzip'  # Force gzip
+app.config['COMPRESS_MIMETYPES'] = [ 'application/json' ]
+
+# Set the secret key for the session
+app.secret_key = getenv('SECRET_KEY')
+
+# Set the session lifetime to 365 days
+app.permanent_session_lifetime = timedelta(days=365)
+
+# Set the session cookie settings
+app.config.update(
+    SESSION_COOKIE_DOMAIN='.drihmia.me',
+    SESSION_COOKIE_NAME='session',
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=True,
+)
+
+CORS(app)
 
 # Load Gemini API key from environment variables
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
@@ -49,7 +79,7 @@ def chat(system_messages):
 
     return response.json()["choices"][0]["message"]["content"]
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/chat', methods=['POST'])
 def chat_endpoint():
     user_message = request.json.get('message')
     user_id = request.args.get("user_id")

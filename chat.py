@@ -23,6 +23,7 @@ from tools.gemini_chat import (
     chat_gemini_generate_content,
     chat_gemini_send_message,
 )
+from chat_gimini import chat_endpoint as chat_endpoint_gemini
 
 load_dotenv()
 
@@ -79,11 +80,12 @@ def root():
     return jsonify({"status": "ok"})
 
 
-@app.route('/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST'])
 def chat_endpoint():
     """
     Chat endpoint
     """
+    return chat_endpoint_gemini()
 
     # Get the user id from args:
     user_id = request.args.get('user_id')
