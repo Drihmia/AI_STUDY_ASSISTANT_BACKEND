@@ -26,7 +26,6 @@ def save_chat_history(user_chat_histories_user, user_id, history_dir="chat_histo
             return
     print(f"Chat history for user {user_id} saved successfully.")
 
-# START: NEW FEEDBACK UTILS
 def load_all_feedback(feedback_dir="feedbacks/"):
     """
     Loads all feedback from the local file system.
@@ -59,7 +58,39 @@ def save_feedback(feedback_doc, feedback_dir="feedbacks/"):
     except Exception as e:
         print_logs_with_time(f"ERROR saving feedback locally: {e}")
         raise
-# END: NEW FEEDBACK UTILS
+
+def load_all_teacher_messages(messages_dir="contact_teacher/"):
+    """
+    Loads all teacher messages from the local file system.
+    """
+    messages = {}
+    if not os.path.exists(messages_dir):
+        os.makedirs(messages_dir)
+    else:
+        for filename in os.listdir(messages_dir):
+            if filename.endswith(".json"):
+                filepath = os.path.join(messages_dir, filename)
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        message_data = json.load(f)
+                        messages[message_data['_id']] = message_data
+                except (json.JSONDecodeError, KeyError) as e:
+                    print_logs_with_time(f"ERROR loading teacher message from {filename}: {e}")
+    return messages
+
+def save_teacher_message(message_doc, messages_dir="contact_teacher/"):
+    """
+    Saves a single teacher message document to a local JSON file.
+    """
+    message_id = message_doc['_id']
+    filepath = os.path.join(messages_dir, f"{message_id}.json")
+    try:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(message_doc, f, indent=4)
+        print(f"Teacher message {message_id} saved successfully.")
+    except Exception as e:
+        print_logs_with_time(f"ERROR saving teacher message locally: {e}")
+        raise
 
 
 # Register signal handler for graceful shutdown

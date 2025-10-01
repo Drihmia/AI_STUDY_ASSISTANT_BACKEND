@@ -14,8 +14,10 @@ from system_prompt import system_prompt_parts
 from tools.utils import (
     load_chat_history,
     save_chat_history,
-    load_all_feedback, # Import new feedback util
-    save_feedback,     # Import new feedback util
+    load_all_feedback,
+    save_feedback,
+    load_all_teacher_messages,
+    save_teacher_message,
     handle_signal,
     load_chat_history_startup,
     append_current_time,
@@ -57,9 +59,11 @@ CORS(app)
 db = Database(os.environ.get("MONGO_URI"))
 history_dir = 'chat_histories/'
 feedback_dir = 'feedbacks/'
+contact_teacher_dir = 'contact_teacher/'
 
 user_chat_histories = {}
-feedbacks = {} # In-memory cache for local feedback
+feedbacks = {}
+teacher_messages = {}
 
 last_message_user = {}
 STORAGE_TYPE = getenv('STORAGE_TYPE', 'local')
@@ -75,6 +79,9 @@ else:
     print("Loading feedbacks from local file system...")
     feedbacks = load_all_feedback(feedback_dir)
     print(f"Number of feedbacks loaded: {len(feedbacks)}")
+    print("Loading teacher messages from local file system...")
+    teacher_messages = load_all_teacher_messages(contact_teacher_dir)
+    print(f"Number of teacher messages loaded: {len(teacher_messages)}")
 
 @app.before_request
 def before_request():
@@ -396,6 +403,43 @@ def get_feedback():
     except Exception as e:
         print_logs_with_time(f"ERROR getting feedback: {e}")
         return jsonify({"error": "Could not retrieve feedback"}), 500
+
+
+# --- Contact Teacher Endpoint ---
+@app.route('/api/contact_teacher', methods=['POST'])
+def contact_teacher():
+    """
+    Submit a message to the teacher.
+    This endpoint captures messages from users intended for the teacher, storing them
+    with user identification for tracking.
+    """
+    data = request.get_json()
+    if not data or not all(k in data for k in ['userId', 'fullName', 'emailAddress', 'message']):
+        return jsonify({"error": "Missing required fields: userId, fullName, emailAddress, and message are required"}), 400
+
+    # --- Create the message document ---
+    message_id = str(ObjectId())
+    message_doc = {
+        "_id": message_id,
+        "userId": data['userId'],
+        "fullName": data['fullName'],
+        "emailAddress": data['emailAddress'],
+        "message": data['message'],
+        "createdAt": datetime.utcnow().isoformat() + 'Z'  # ISO 8601 format
+    }
+
+    # --- Save the message based on storage type ---
+    try:
+        if STORAGE_TYPE == 'remote':
+            db.submit_teacher_message(message_doc)
+        else:
+            save_teacher_message(message_doc, contact_teacher_dir)
+            teacher_messages[message_id] = message_doc # Update in-memory cache
+    except Exception as e:
+        print_logs_with_time(f"ERROR submitting teacher message: {e}")
+        return jsonify({"error": "Could not save message"}), 500
+
+    return jsonify({"success": True, "message": "Your message has been sent to the teacher."}), 201
 
 
 @app.route('/api/answers', methods=['POST'])

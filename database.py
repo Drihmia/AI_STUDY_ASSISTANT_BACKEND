@@ -11,9 +11,12 @@ class Database:
         print("DB:", self.db)
         self.collection = self.db[os.environ.get("MONGO_COLLECTION_NAME", "history")]
         print("Collection:", self.collection)
-        # Add a new collection for feedback
+        # A collection for user feedback
         self.feedback_collection = self.db[os.environ.get("MONGO_FEEDBACK_COLLECTION_NAME", "feedback")]
         print("Feedback Collection:", self.feedback_collection)
+        # A collection for messages sent to the teacher
+        self.contact_teacher_collection = self.db[os.environ.get("MONGO_CONTACT_TEACHER_COLLECTION_NAME", "contact_teacher")]
+        print("Contact Teacher Collection:", self.contact_teacher_collection)
 
     def get_history(self, user_id):
         """
@@ -81,14 +84,11 @@ class Database:
         conversations.sort(key=lambda x: x.get('last_message_time', ''), reverse=True)
         return [(c['_id'], c['last_message_time'], c['size_kb']) for c in conversations]
 
-    # START: NEW FEEDBACK METHODS
     def submit_feedback(self, feedback_doc):
         """
         Inserts a feedback document into the feedback collection.
-        The _id is expected to be a string representation of an ObjectId.
         """
         try:
-            # The _id from chat.py is a string, which is fine.
             self.feedback_collection.insert_one(feedback_doc)
         except Exception as e:
             print(f"Error inserting feedback: {e}")
@@ -97,25 +97,29 @@ class Database:
     def get_feedback(self, cursor=None, limit=10):
         """
         Retrieves feedback from the collection with cursor-based pagination.
-        Sorts by createdAt descending.
         """
         query = {}
         if cursor:
             try:
-                # We query for documents created before the cursor's timestamp.
-                # The cursor is the `createdAt` field of the last item from the previous page.
                 query['createdAt'] = {'$lt': cursor}
             except Exception as e:
                 print(f"Error processing cursor: {e}")
                 return [], None
 
-        # Sort by createdAt descending to get the most recent feedback first
         items = list(self.feedback_collection.find(query).sort('createdAt', DESCENDING).limit(limit))
 
         next_cursor = None
         if len(items) == limit:
-            # The `createdAt` of the last item is the cursor for the next page
             next_cursor = items[-1]['createdAt']
         
         return items, next_cursor
-    # END: NEW FEEDBACK METHODS
+
+    def submit_teacher_message(self, message_doc):
+        """
+        Inserts a contact message document into the contact_teacher collection.
+        """
+        try:
+            self.contact_teacher_collection.insert_one(message_doc)
+        except Exception as e:
+            print(f"Error inserting teacher message: {e}")
+            raise
