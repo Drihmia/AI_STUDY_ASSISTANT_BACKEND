@@ -12,6 +12,8 @@ This is a Python-based AI Study Assistant that uses the Gemini API to provide a 
 *   **Interactive Chat:** Engage in conversations with an AI-powered assistant.
 *   **Persistent Chat History:** Your conversations are saved, allowing you to continue where you left off.
 *   **Dual Storage Options:** Choose between local file-based storage or a remote MongoDB database for your chat histories.
+*   **Contact Teacher Form:** A dedicated form for students to send messages directly to the teacher.
+*   **Email Notifications:** The teacher receives an email notification whenever a student submits a message.
 *   **Secure API:** Endpoints are protected to ensure that only authorized users can access conversation data.
 *   **Easy Deployment:** The application is designed for straightforward deployment to platforms like Render.
 
@@ -25,6 +27,7 @@ These instructions will get you a copy of the project up and running on your loc
 *   pip (Python package installer)
 *   A Gemini API key
 *   A MongoDB database (if using remote storage)
+*   A Mailgun account for email notifications
 
 ### Installation
 
@@ -72,6 +75,17 @@ These instructions will get you a copy of the project up and running on your loc
 
     # Set to True for Flask debug mode
     AI_DEBUG=False
+
+    # -- Email Notification Settings --
+
+    # Mailgun API Key for sending emails
+    MAILGUN_API_KEY="YOUR_MAILGUN_API_KEY"
+
+    # Mailgun Domain
+    MAILGUN_DOMAIN="YOUR_MAILGUN_DOMAIN"
+
+    # Teacher's email address for receiving notifications
+    TEACHER_EMAIL="YOUR_TEACHER_EMAIL"
     ```
 
 ## Usage
@@ -90,6 +104,7 @@ The application will be available at `http://localhost:5000`.
 *   `POST /api/chat`: The main chat endpoint to send and receive messages.
 *   `GET /api/history`: Retrieve the chat history for a specific user.
 *   `POST /api/answers`: Submit answers to a form presented by the AI.
+*   `POST /api/contact_teacher`: Submit a message to the teacher.
 *   `GET /api/list_conversations`: List all conversations (requires a password).
 *   `GET /api/list_conversations/<conversation_id>`: Retrieve a specific conversation by its ID (requires a password).
 
