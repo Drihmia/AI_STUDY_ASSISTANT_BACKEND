@@ -29,6 +29,7 @@ from tools.gemini_chat import (
     chat_gemini_generate_content,
     chat_gemini_send_message,
 )
+from tools.send_email import send_teacher_email # Import the email sending function
 from database import Database
 import json
 from bson.objectid import ObjectId
@@ -411,7 +412,7 @@ def contact_teacher():
     """
     Submit a message to the teacher.
     This endpoint captures messages from users intended for the teacher, storing them
-    with user identification for tracking.
+    with user identification for tracking. It also sends an email notification to the teacher.
     """
     data = request.get_json()
     if not data or not all(k in data for k in ['userId', 'fullName', 'emailAddress', 'message']):
@@ -428,13 +429,22 @@ def contact_teacher():
         "createdAt": datetime.utcnow().isoformat() + 'Z'  # ISO 8601 format
     }
 
-    # --- Save the message based on storage type ---
+    # --- Save the message and send the email ---
     try:
         if STORAGE_TYPE == 'remote':
             db.submit_teacher_message(message_doc)
         else:
             save_teacher_message(message_doc, contact_teacher_dir)
             teacher_messages[message_id] = message_doc # Update in-memory cache
+
+        # --- Send email notification in a background thread ---
+        email_thread = Thread(
+            target=send_teacher_email,
+            args=(data['fullName'], data['emailAddress'], data['message']),
+            daemon=True
+        )
+        email_thread.start()
+
     except Exception as e:
         print_logs_with_time(f"ERROR submitting teacher message: {e}")
         return jsonify({"error": "Could not save message"}), 500
