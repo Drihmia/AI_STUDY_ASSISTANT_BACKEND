@@ -286,7 +286,7 @@ def load_history():
     # Get pagination parameters (page and limit), defaulting to page=1 and limit=30
     try:
         page = int(request.args.get('page', 1))
-        limit = int(request.args.get('limit', 200))
+        limit = int(request.args.get('limit', 2))
 
         # Ensure limit is even
         if limit % 2 != 0:

@@ -2,6 +2,11 @@
 
 This is a Python-based AI Study Assistant that uses the Gemini API to provide a seamless and interactive chat experience. The application is built with Flask and can be configured to store chat histories either locally or in a remote MongoDB database.
 
+## Repositories
+
+*   **Frontend:** [https://github.com/Drihmia/AI_STUDY_ASSISTANT_FRONTEND](https://github.com/Drihmia/AI_STUDY_ASSISTANT_FRONTEND)
+*   **Backend:** [https://github.com/Drihmia/AI_STUDY_ASSISTANT_BACKEND](https://github.com/Drihmia/AI_STUDY_ASSISTANT_BACKEND)
+
 ## Features
 
 *   **Interactive Chat:** Engage in conversations with an AI-powered assistant.
@@ -87,6 +92,8 @@ The application will be available at `http://localhost:5000`.
 *   `POST /api/answers`: Submit answers to a form presented by the AI.
 *   `GET /api/list_conversations`: List all conversations (requires a password).
 *   `GET /api/list_conversations/<conversation_id>`: Retrieve a specific conversation by its ID (requires a password).
+
+For a detailed description of all the API endpoints in this project, please see the [API_ENDPOINTS.md](API_ENDPOINTS.md) file.
 
 ## Deployment
 
