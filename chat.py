@@ -418,6 +418,10 @@ def contact_teacher():
     if not data or not all(k in data for k in ['userId', 'fullName', 'emailAddress', 'message']):
         return jsonify({"error": "Missing required fields: userId, fullName, emailAddress, and message are required"}), 400
 
+    # Validate message content
+    if len(data['message'].strip()) < 10:
+        return jsonify({"error": "Message must be at least 10 characters long"}), 400
+
     # --- Create the message document ---
     message_id = str(ObjectId())
     message_doc = {
@@ -429,7 +433,18 @@ def contact_teacher():
         "createdAt": datetime.utcnow().isoformat() + 'Z'  # ISO 8601 format
     }
 
-    # --- Save the message and send the email ---
+    # --- Send email first to validate before saving ---
+    email_success, email_error = send_teacher_email(
+        data['fullName'],
+        data['emailAddress'],
+        data['message']
+    )
+
+    if not email_success:
+        print_logs_with_time(f"ERROR sending email to teacher: {email_error}")
+        return jsonify({"error": email_error or "Failed to send email"}), 500
+
+    # --- Save the message after successful email ---
     try:
         if STORAGE_TYPE == 'remote':
             db.submit_teacher_message(message_doc)
@@ -437,17 +452,10 @@ def contact_teacher():
             save_teacher_message(message_doc, contact_teacher_dir)
             teacher_messages[message_id] = message_doc # Update in-memory cache
 
-        # --- Send email notification in a background thread ---
-        email_thread = Thread(
-            target=send_teacher_email,
-            args=(data['fullName'], data['emailAddress'], data['message']),
-            daemon=True
-        )
-        email_thread.start()
-
     except Exception as e:
         print_logs_with_time(f"ERROR submitting teacher message: {e}")
-        return jsonify({"error": "Could not save message"}), 500
+        # Email was sent but storage failed - still return success to user
+        print_logs_with_time("Email was sent successfully but message storage failed")
 
     return jsonify({"success": True, "message": "Your message has been sent to the teacher."}), 201
 
