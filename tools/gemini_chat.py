@@ -7,6 +7,8 @@ from tools.utils import (get_current_time,
                          )
 import datetime
 import sys
+from PIL import Image
+import io
 
 # System prompt for the Gemini model
 system_prompt = {
@@ -41,18 +43,36 @@ def gemini_model(system_messages: dict, api_key: str, model_name: str) -> genai.
 
 # Create the Gemini model
 _gemini_model_send_message = gemini_model(system_prompt, api_key_gimini, "gemini-2.0-flash")
+_gemini_model_generate_content = gemini_model(system_prompt, api_key_gimini, "gemini-2.0-flash")
+_gemini_model_generate_content_from_image = gemini_model(system_prompt, api_key_gimini, "gemini-2.0-flash")
 
-_gemini_model_generate_content = gemini_model(system_prompt, api_key_gimini, "gemini-2.0-flash-thinking-exp-01-21")
+def chat_gemini_generate_content_from_image(system_messages: dict, image) -> str:
+    """
+    Chat with the Gemini API using an image
+    """
+
+    image_bytes = io.BytesIO(image.read())
+    print_logs_with_time("Image bytes size:", image_bytes.getbuffer().nbytes)
+    img = Image.open(image_bytes)
+    print_logs_with_time("Image format:", img.format)
+
+    try:
+        response = _gemini_model_generate_content_from_image.generate_content(["i prefer frensh, redouane dri, 1bac, 16ans, pleas Describe this image in detail and if the image is a text based, give the text well structred and fix some reading errors based in the lessons provided to spectaculate the right format for some symboles and solution if possible. if there is, and it will be, figures, graphes or diagramses or anything not a text and/or releviente to question must be described in details.\n# Important: give the text well structred first and when the image is finished add a separated section for each figure : add detailed descriptions for each figure" , img]).text.strip()
+    except Exception as e:
+        print_logs_with_time("Error generating content from image:", e)
+        raise e
+
+    response = response.removeprefix("```html").removesuffix("```").strip()
+
+    return '\n' + response
 
 def chat_gemini_send_message(system_messages: dict, message: str, tries: int = 0) -> str:
     """
     Chat with the Gemini API
     """
 
-    # response = _gemini_model.generate_content(system_messages).text.strip()
     start = get_current_time(date_object=True)
     try:
-        # raise Exception("test")
         chat_session = _gemini_model_send_message.start_chat(history=system_messages)
         response = chat_session.send_message(message).text.strip()
         response = response.removeprefix("```html").removesuffix("```").strip()
@@ -61,9 +81,8 @@ def chat_gemini_send_message(system_messages: dict, message: str, tries: int = 0
         print_logs_with_time(f"Response time: {end - start}")
         return '\n' + response
     except Exception as e:
-        print_logs_with_time("Error creating the Gemini model (send message) {tries} time(s) - sleep 20s :", e)
+        print_logs_with_time(f"Error creating the Gemini model (send message) {tries} time(s) - sleep 20s :", e)
         print_logs_with_time("*"*50, "chat sleeping for 20s\n")
-        # sleep(20)
         if tries == 10:
             return '\n'
         print("*"*50, "recursive call to chat_gemini_send_message\n")
@@ -79,7 +98,6 @@ def chat_gemini_generate_content(system_messages: dict, tries: int = 0) -> str:
 
     start = get_current_time(date_object=True)
     try:
-        raise Exception("test")
         response = _gemini_model_generate_content.generate_content(system_messages).text.strip()
         response = response.removeprefix("```html").removesuffix("```").strip()
         print("*"*30, "response from gemini generate content", "*"*30)
@@ -88,12 +106,6 @@ def chat_gemini_generate_content(system_messages: dict, tries: int = 0) -> str:
         print_logs_with_time(f"Response time: {end - start}")
         return '\n' + response
     except Exception as e:
-        # print_logs_with_time(f"Error creating the Gemini model (generate content) {tries} time(s) - sleep 20s :", e)
-        # print_logs_with_time(""*50, "generate_content sleeping for 20s\n")
-        # sleep(20)
-        # print_logs_with_time(""*50, "recursive call to chat_gemini_generate_content\n")
         if tries == 2:
             return '\n'
         chat_gemini_generate_content(system_messages, tries + 1)
-        # if "429 Resource has been exhausted" in str(e):
-            # raise Exception("Gemini API rate limit exceeded. Please try again later. (generate content)")

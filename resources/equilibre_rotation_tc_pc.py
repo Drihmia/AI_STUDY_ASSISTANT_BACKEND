@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 equilibre_rotation_tc_pc = """
 # lecons : Équilibre d'un solide en rotation autour d'un axe fixe
 

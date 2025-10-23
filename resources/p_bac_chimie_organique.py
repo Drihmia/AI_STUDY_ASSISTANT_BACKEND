@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 chimie_organique = """
 # Partie 2 : Chimie organique
 

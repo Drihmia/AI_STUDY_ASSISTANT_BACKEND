@@ -50,6 +50,7 @@
       onStart = {
         # Example: start a background task to watch and re-build backend code
         # watch-backend = "npm run watch-backend";
+        create-aliases = "alias gpp='git pull'; alias gp='git push'; alias gs='git status'; alias gd='git diff'; alias gr='git restore'; alias ga='git add .';";
       };
     };
   };
