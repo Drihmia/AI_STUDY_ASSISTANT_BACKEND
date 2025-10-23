@@ -30,3 +30,4 @@ flask_compress
 flask_cors
 bs4
 pymongo
+Pillow
