@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, make_response, session
 from flask_cors import CORS
 from flask_compress import Compress
+from werkzeug.utils import secure_filename
 import google.generativeai as genai
 from os import getenv, path, listdir
 from re import sub
@@ -28,6 +29,7 @@ from tools.chat_utils import update_form_with_unique_ids
 from tools.gemini_chat import (
     chat_gemini_generate_content,
     chat_gemini_send_message,
+    chat_gemini_generate_content_from_image,
 )
 from tools.send_email import send_teacher_email # Import the email sending function
 from database import Database
@@ -56,8 +58,11 @@ app.config.update(
 )
 CORS(app)
 
+STORAGE_TYPE = getenv('STORAGE_TYPE', 'local')
 # --- Storage and Database Initialization ---
-db = Database(os.environ.get("MONGO_URI"))
+if STORAGE_TYPE == 'remote':
+    print("Using remote MongoDB storage")
+    db = Database(os.environ.get("MONGO_URI"))
 history_dir = 'chat_histories/'
 feedback_dir = 'feedbacks/'
 contact_teacher_dir = 'contact_teacher/'
@@ -67,7 +72,7 @@ feedbacks = {}
 teacher_messages = {}
 
 last_message_user = {}
-STORAGE_TYPE = getenv('STORAGE_TYPE', 'local')
+last_image_status_user = {}
 
 # --- Initial Data Loading ---
 if STORAGE_TYPE == 'remote':
@@ -93,12 +98,73 @@ def before_request():
 def root():
     return jsonify({"status": "ok"})
 
+@app.route('/api/image', methods=['POST'])
+def image_endpoint():
+    """
+    Image endpoint
+    """
+
+    user_id = request.args.get('user_id')
+
+    # ensure there's a history for the user by loading their specific history file
+    if user_id not in user_chat_histories.keys() and STORAGE_TYPE == 'remote':
+        user_chat_histories[user_id] = db.get_history(user_id)
+    elif user_id not in user_chat_histories.keys() and STORAGE_TYPE == 'local':
+        user_chat_histories[user_id] = load_chat_history(user_id, history_dir)
+
+    user_message = request.form.get('message', "").strip()
+    print_logs_with_time("user_message from image endpoint:", user_message)
+
+    # Historique of the user based on the user_id
+    if 'image' not in request.files:
+        return jsonify({ "response": '', "form_id": session.get('form_id', '') , 'error': 'No image part in the request'}), 400
+
+    image = request.files['image']
+
+    if not image or image.filename == '':
+        return jsonify({ "response": '', "form_id": session.get('form_id', '') , 'error': 'No selected image'}), 400
+
+    filename = secure_filename(image.filename)
+    if not filename:
+        return jsonify({ "response": '', "form_id": session.get('form_id', '') , 'error': 'Invalid image filename'}), 400
+
+    if last_image_status_user.get(user_id, {}) == filename:
+        print_logs_with_time("Image is the same as the last image", "+" * 20)
+        return jsonify({ "response": '', "form_id": session.get('form_id', '') , 'error': 'Image already processed'}), 400
+
+
+    # append the user's message to the chat history
+    temp_list = [{"role": "user", "parts": (append_current_time('user', user_message))}]
+
+    response = chat_gemini_generate_content_from_image(user_chat_histories[user_id] + temp_list, image)
+    print("++++++++"*20)
+    print("response from gemini_generate_content_from_image:", response[:10], '\t'*2, response[-50:] + '\n')
+    print("++++++++"*20)
+
+    # append the model's response to the chat history
+    temp_list.append({"role": "model", "parts": append_current_time('model', response)})
+    user_chat_histories[user_id].extend(temp_list)
+
+    if STORAGE_TYPE == 'remote':
+        Thread(target=db.add_messages, args=(user_id, temp_list), daemon=True).start()
+    else:
+        Thread(target=save_chat_history, args=(user_chat_histories[user_id], user_id, history_dir), daemon=True).start()
+
+
+    last_image_status_user[user_id] = filename
+    return jsonify({ "response": response, "form_id": session.get('form_id', ''), 'user_message': user_message }), 200
+
+
 @app.route('/api/chat', methods=['POST'])
 def chat_endpoint():
     """
     Chat endpoint
     """
 
+    if not request.is_json:
+        # redirect to /api/image endpoint
+        print_logs_with_time("Request is not JSON, redirecting to /api/image endpoint")
+        return image_endpoint()
     # Get the user id from args:
     user_id = request.args.get('user_id')
     print_logs_with_time("user_id from args:", user_id)
@@ -116,8 +182,10 @@ def chat_endpoint():
         usr_id_exist = 0
 
     # ensure there's a history for the user by loading their specific history file
-    if user_id not in user_chat_histories.keys():
+    if user_id not in user_chat_histories.keys() and STORAGE_TYPE == 'remote':
         user_chat_histories[user_id] = db.get_history(user_id)
+    elif user_id not in user_chat_histories.keys() and STORAGE_TYPE == 'local':
+        user_chat_histories[user_id] = load_chat_history(user_id, history_dir)
 
     user_message = ""
     if request.is_json:
@@ -137,6 +205,7 @@ def chat_endpoint():
         formatted_answers = [k + ': ' + v for k, v in answers.items() if k != 'language']
         user_message = f"{structured_message_based_on_user_language.get(language)}:<br>&emsp;➔ {'<br>&emsp;➔ '.join(formatted_answers)}<br>"
     session['answers'] = None
+
 
     if not user_message:
         return jsonify({ "response": '', "form_id": session.get('form_id', '') , 'user_message': user_message })
@@ -460,6 +529,7 @@ def contact_teacher():
     return jsonify({"success": True, "message": "Your message has been sent to the teacher."}), 201
 
 
+
 @app.route('/api/answers', methods=['POST'])
 def get_answers():
     """
@@ -539,4 +609,4 @@ def bad_request(e):
 
 if __name__ == '__main__':
     AI_DEBUG = getenv('AI_DEBUG', False)
-    app.run(debug=AI_DEBUG, host='0.0.0.0', port=5000)
+    app.run(debug=AI_DEBUG, host='0.0.0.0', port=5002)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 equilibre_3_forces_tc_pc = """
 # Document: Équilibre d'un solide soumis à trois forces non parallèles
 

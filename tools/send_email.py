@@ -10,7 +10,7 @@ def validate_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
 
-def send_teacher_email(fullName, emailAddress, message):
+def send_teacher_email(fullName, emailAddress, message, subject):
     """
     Sends an email to the teacher with the student's message.
     Uses the Mailgun API to send the email.
@@ -32,6 +32,7 @@ def send_teacher_email(fullName, emailAddress, message):
     teacher_email = os.getenv('TEACHER_EMAIL')
 
     if not all([mailgun_api_key, mailgun_domain, teacher_email]):
+
         error_msg = "Email not sent: Missing MAILGUN_API_KEY, MAILGUN_DOMAIN, or TEACHER_EMAIL environment variables."
         print(error_msg)
         return False, "Email configuration is missing"
@@ -56,6 +57,8 @@ def send_teacher_email(fullName, emailAddress, message):
         <h2>New Message from a Student</h2>
         <p><strong>From:</strong> {safe_fullName}</p>
         <p><strong>Email:</strong> <a href="mailto:{safe_emailAddress}">{safe_emailAddress}</a></p>
+        <p><strong>Subject:</strong> {subject}</p>
+
         <hr>
         <h3>Message:</h3>
         <p style="white-space: pre-wrap;">{safe_message}</p>
@@ -86,6 +89,7 @@ def send_teacher_email(fullName, emailAddress, message):
             print(error_msg)
             return False, "Failed to send email. Please try again later."
 
+
     except requests.exceptions.Timeout:
         error_msg = "Email sending timed out"
         print(error_msg)
@@ -94,3 +98,4 @@ def send_teacher_email(fullName, emailAddress, message):
         error_msg = f"An error occurred while sending the email: {e}"
         print(error_msg)
         return False, "Failed to send email due to a network error."
+

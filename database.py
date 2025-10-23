@@ -1,7 +1,5 @@
 import os
 from pymongo import MongoClient, DESCENDING
-from bson import BSON
-from bson.objectid import ObjectId
 
 class Database:
     def __init__(self, uri):
