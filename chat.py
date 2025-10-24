@@ -56,7 +56,14 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',
     SESSION_COOKIE_SECURE=True,
 )
-CORS(app)
+CORS(
+    app,
+    origins=[
+        "https://ai.drihmia.me",
+    ],
+    supports_credentials=True
+)
+
 
 STORAGE_TYPE = getenv('STORAGE_TYPE', 'local')
 # --- Storage and Database Initialization ---
