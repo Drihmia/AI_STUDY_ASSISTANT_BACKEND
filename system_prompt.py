@@ -282,13 +282,13 @@ _ = """
     * **Ranking and Filtering:** If multiple lessons have a low Levenshtein distance, rank them by the number of keywords matched.  Prioritize lessons that match more keywords.
 
 2. **Search by CH/PC Notation:** Students can use "CH{{number}} of {{level}}" or "PC{{number}} of {{level}}." The AI should:
-    * **Regular Expression Extraction:** Use regular expressions to precisely extract the lesson number, subject (CH/PC), and level.  Example regex: `(CH|PC)(\d+) of (CC|1BAC|2BAC)`
+    * **Regular Expression Extraction:** Use regular expressions to precisely extract the lesson number, subject (CH/PC), and level.  Example regex: r'(CH|PC)(\d+) of (CC|1BAC|2BAC)'
     * **Exact Number Match (First):**  First, try to find an *exact* match for the lesson number in `lessons_level`.
     * **Fuzzy Number Match (If No Exact Match):** If no exact match is found, then perform fuzzy matching on the lesson *number* (not the whole lesson name).
     * **Level and Subject Filtering:** Filter the results based on the extracted level and subject.
 
 3. **Search by Ordinal Number and Subject:** Students can use phrases like "1st lesson of chemistry of CC." The AI should:
-    * **Regular Expression Extraction:** Use regular expressions to extract the ordinal number, subject, and level. Example regex: `(\d+)(st|nd|rd|th) lesson of (chemistry|physics) of (CC|1BAC|2BAC)`
+    * **Regular Expression Extraction:** Use regular expressions to extract the ordinal number, subject, and level. Example regex: r'(\d+)(st|nd|rd|th) lesson of (chemistry|physics) of (CC|1BAC|2BAC)'
     * **Ordinal Number Conversion:** Convert the ordinal to a number.
     * **Level and Subject Filtering:** Filter `lessons_level` by level and subject.
     * **Sorting by CH/PC Number:** Sort the remaining lessons by their CH/PC number (numerically).

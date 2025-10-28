@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""This module contains utility functions for chat processing."""
+from uuid import uuid4
+from re import sub
+from flask import session
+from tools.utils import print_logs_with_time
+
 import random
 import string
 from bs4 import BeautifulSoup
@@ -36,6 +43,35 @@ def update_form_with_unique_ids(form_html):
 
     return str(soup)
 
+def handle_form_in_response(response):
+    """
+    Checks for a form in the response, replaces its ID with a unique one,
+    and updates the session with the new form ID.
+
+    Args:
+        response (str): The HTML response content from the model.
+
+    Returns:
+        str: The modified response with the updated form.
+    """
+    if '<form ' in response:
+        random_string = '-' + str(uuid4())
+        pattern = r'(<form\s+[^>]*id=")[^"]*(")'
+        replacement = rf'\1{random_string}\2'
+        
+        try:
+            response = sub(pattern, replacement, response)
+            response = update_form_with_unique_ids(response)
+        except Exception as e:
+            print_logs_with_time(f"ERROR while replacing the form id: {e}")
+            error_message = (
+                "Sorry, there was an error with this form. "
+                "Please communicate with us using this code: "
+            )
+            response = f"{response}\n\n{error_message}{random_string}"
+        
+        session['form_id'] = random_string
+        
 
 def update_time_in_time_tag(message, time):
     # Parse the HTML
