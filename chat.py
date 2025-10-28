@@ -25,10 +25,9 @@ from app import (
 from tools.utils import (
     save_feedback,
     save_teacher_message,
-    append_current_time,
-    print_logs_with_time,
 )
-from tools.chat_utils import handle_form_in_response
+from tools.log import print_logs_with_time
+from tools.chat_utils import handle_form_in_response, append_current_time
 from tools.gemini_chat import (
     chat_gemini_generate_content,
     chat_gemini_send_message,
@@ -137,7 +136,7 @@ def chat_endpoint():
     except Exception as e:
         print_logs_with_time(f"ERROR while generating content: {e}")
         try:
-            response = chat_gemini_send_message(user_chat_histories.get(user_id, []) + temp_list, user_message)
+            response = chat_gemini_send_message(user_chat_histories.get(user_id, []) + temp__list, user_message)
         except Exception as e:
             print_logs_with_time(f"ERROR while sending message: {e}")
             return jsonify({"response": '', "form_id": session.get('form_id', ''), 'error': 'The quota has been reached, Please try again in a minute'}), 400

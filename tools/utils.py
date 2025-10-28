@@ -2,7 +2,7 @@ import os
 import json
 from zoneinfo import ZoneInfo
 from datetime import datetime
-from tools.chat_utils import update_time_in_time_tag
+from tools.log import print_logs_with_time
 
 # Function to load chat histories for a specific user
 def load_chat_history(user_id, history_dir="chat_histories"):
@@ -130,21 +130,6 @@ def get_current_time(time_zone='Africa/Casablanca', date_object=False):
         if date_object:
             return datetime.now()
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-def append_current_time(role, message):
-    current_time = get_current_time("Africa/Casablanca")
-    if role.lower() == "user":
-        if ('<time>' in message) or ('<time ' in message):
-            return update_time_in_time_tag(message, current_time)
-        return update_time_in_time_tag(f'<p>{message}</p><br><time>{current_time}</time>', current_time)
-    else:
-        if ('<time>' in message) or ('<time ' in message):
-            return update_time_in_time_tag(message, current_time)
-        return update_time_in_time_tag(f'{message}<br><time>{current_time}</time>', current_time)
-
-def print_logs_with_time(*message):
-    print(f"[{get_current_time('Africa/Casablanca')}]", *message)
-
 
 if __name__ == "__main__":
     print("This is a utility module. It is not meant to be executed directly.")
