@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 example_action_mecanique_tc_pc = """
 # Document: Actions Mécaniques - Consolidated Lesson
 

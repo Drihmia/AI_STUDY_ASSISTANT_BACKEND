@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 geometrie_tc_pc = """
 Géométrie de Quelques Molécules
 

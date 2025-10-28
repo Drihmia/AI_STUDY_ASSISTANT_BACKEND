@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 transfert_energie = """
 # Document: Transfert d'énergie dans un circuit électrique
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 physique_mecanique_1_bac = """
 Cours de Physique - Lycée Almandar Aljamil - 1bac ex F1
 

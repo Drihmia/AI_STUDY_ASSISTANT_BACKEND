@@ -44,7 +44,7 @@ def gemini_model(system_messages: dict, api_key: str, model_name: str) -> genai.
 # Create the Gemini model
 _gemini_model_send_message = gemini_model(system_prompt, api_key_gimini, "gemini-2.0-flash")
 _gemini_model_generate_content = gemini_model(system_prompt, api_key_gimini, "gemini-2.0-flash")
-_gemini_model_generate_content_from_image = gemini_model(system_prompt, api_key_gimini, "gemini-2.0-flash")
+_gemini_model_generate_content_from_image = gemini_model(system_prompt, api_key_gimini, "gemini-2.5-flash")
 
 def chat_gemini_generate_content_from_image(system_messages: dict, image) -> str:
     """

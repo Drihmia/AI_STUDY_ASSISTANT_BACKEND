@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 princie_d_inertie_tc_pc = """
 # Document: Principe d'inertie - Leçon Consolidée
 

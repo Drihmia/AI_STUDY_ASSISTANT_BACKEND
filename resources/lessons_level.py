@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 lessons_level = {
     "common_core": {
         "Physics": [

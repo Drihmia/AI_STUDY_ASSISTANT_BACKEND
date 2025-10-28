@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 modele_atome_tc_ch = """
 
 **Modèle de l'atome : Histoire et Structure**

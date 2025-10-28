@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 equilibre_2_forces_tc_pc = """
 # Document: Tension d'un ressort – Poussée d'Archimède
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 tableau_periodique_tc_ch = """
 # Document: Classification périodique des éléments chimiques
 

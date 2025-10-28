@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 periodic_table_tc_ch = """
 # Classification Périodique des Éléments Chimiques : Synthèse Complète
 

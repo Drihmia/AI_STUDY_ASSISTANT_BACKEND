@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 chimie_en_solution_1_bac  = """
 
 IMPORTANT: Toujours choisir les réactions totales pour les reactions acido-basiques et d'oxydo-réduction si possible sinon considérer toutes les réactions dans ce niveau sont totales.

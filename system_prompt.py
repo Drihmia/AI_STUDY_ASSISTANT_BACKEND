@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # TC
 ## CHIMIE
 from resources.modele_atome_tc_pc import modele_atome_tc_ch
